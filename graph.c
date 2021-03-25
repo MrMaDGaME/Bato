@@ -18,22 +18,22 @@ struct graph *create_graph(){
             if (i){
                 add_link(g->first, g->first->next);
             }
-            struct node *parkour = g->first;
-            for (int k = 0; k < WIDTH - 1; k++)
-            {
-                parkour = parkour->next;
-            }
-            if (i != WIDTH - 1 && j){
+	    if (j){
+	      struct node *parkour = g->first;
+	      for (int k = 0; k < WIDTH - 1; k++)
+		{
+		  parkour = parkour->next;
+		}
+	      if (i != WIDTH - 1){
                 add_link(g->first, parkour);
-            }
-            parkour = parkour->next;
-            if (j){
+	      }
+	      parkour = parkour->next;
+	      add_link(g->first, parkour);
+	      parkour = parkour->next;
+	      if (i){
                 add_link(g->first, parkour);
-            }
-            parkour = parkour->next;
-            if (i && j){
-                add_link(g->first, parkour);
-            }
+	      }
+	    }
         }
     }
     return g;
@@ -54,7 +54,7 @@ void add_node(struct graph *g, int x, int y, int is_water){
 }
 
 void add_link(struct node *s1, struct node *s2){
-    // structure qui contient l'arc allant vers s2
+    // structure qui contient l'arc allant de s1 vers s2
     struct linklist *s2link = malloc(sizeof(struct linklist));
     // définition du voisin
     s2link->neighbourg = s2;
@@ -90,7 +90,7 @@ void free_graph(struct graph *g){
 }
 
 int main(){
-    create_graph();
-    //free(g);
+    struct graph *g = create_graph();
+    free_graph(g);
     return 0;
 }
