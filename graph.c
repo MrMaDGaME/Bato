@@ -1,22 +1,10 @@
+#include "graph.h"
+#include <stdlib.h>
+
 #define HEIGHT 9
 #define WIDTH 16
 #define PIXEL_SIZE 10
 
-struct graph{
-    int order;
-    struct node *first
-};
-
-struct node{
-    struct chkpoint *point;
-    struct linklist *links;
-    struct node *next;
-};
-
-struct linklist{
-    struct node *neighbourg;
-    struct linklist *next;
-};
 
 struct graph *create_graph(){
     struct graph *g = malloc(sizeof(struct graph));
@@ -47,7 +35,6 @@ struct graph *create_graph(){
                 add_link(g->first, parkour);
             }
         }
-        
     }
     return g;
 }
@@ -102,4 +89,8 @@ void free_graph(struct graph *g){
     free(g);
 }
 
-
+int main(){
+    create_graph();
+    //free(g);
+    return 0;
+}
