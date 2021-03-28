@@ -1,5 +1,5 @@
-#include "graph.h"
 #include <stdlib.h>
+#include "graph.h"
 
 #define HEIGHT 9
 #define WIDTH 16
@@ -9,6 +9,7 @@
 struct graph *create_graph(){
     struct graph *g = malloc(sizeof(struct graph));
     g->order = 0;
+    g->first = NULL;
     for (int j = 0; j < HEIGHT; j++)
     {
         for (int i = 0; i < WIDTH; i++)
@@ -47,8 +48,10 @@ void add_node(struct graph *g, int x, int y, int is_water){
     point->cost = 0;
     point->heuristic = 0;
     struct node *s = malloc(sizeof(struct node));
+    s->marked = 0;
+    s->parent = NULL;
+    s->links = NULL;
     s->point = point;
-    s->next = NULL;
     s->next = g->first;
     g->first = s;
 }
@@ -89,8 +92,8 @@ void free_graph(struct graph *g){
     free(g);
 }
 
-int main(){
+/*int main(){
     struct graph *g = create_graph();
     free_graph(g);
     return 0;
-}
+    }*/

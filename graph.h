@@ -2,24 +2,27 @@
 #define GRAPH_H
 
 struct graph{
-    int order;
-    struct node *first;
+  int order;
+  struct node *first;
 };
 
 struct node{
-    struct chkpoint *point;
-    struct linklist *links;
-    struct node *next;
+  struct chkpoint *point;
+  int marked;
+  struct node *parent;
+  struct linklist *links;
+  struct node *next;
 };
 
 struct linklist{
-    struct node *neighbourg;
-    struct linklist *next;
+  struct node *neighbourg;
+  struct linklist *next;
 };
 
 struct chkpoint{
-    int x, y, is_water;
-    unsigned int cost, heuristic;
+  int x, y, is_water;
+  unsigned int cost;
+  float heuristic;
 };
 
 struct graph *create_graph();

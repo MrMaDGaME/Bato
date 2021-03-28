@@ -4,22 +4,24 @@
 struct Queue {
     int front, rear;
     unsigned size, capacity;
-    struct chkpoint* array;
+    struct node** array;
 };
 
 struct Queue* createQueue(unsigned capacity);
 
-int isFull(struct Queue* queue);
+int isFull_queue(struct Queue* queue);
 
-int isEmpty(struct Queue* queue);
+int isEmpty_queue(struct Queue* queue);
 
-void enqueue(struct Queue* queue, struct chkpoint item);
+void enqueue(struct Queue* queue, struct node *item);
 
-struct chkpoint dequeue(struct Queue* queue);
+struct node *dequeue(struct Queue* queue);
 
-struct chkpoint front(struct Queue* queue);
+struct node *front(struct Queue* queue);
 
-struct chkpoint rear(struct Queue* queue);
+struct node *rear(struct Queue* queue);
+
+int isitin(struct Queue *queue, struct node *item);
 
 void print_queue(struct Queue* queue);
 
