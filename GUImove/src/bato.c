@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
+#include "astar.h"
 
 #define PI 3.14159265359
 #define PADDLE_STEP 5
