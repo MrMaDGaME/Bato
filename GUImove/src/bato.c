@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
-#include "astar.h"
+#include "../../pathfinding/astar.h"
+#include "../../pathfinding/graph.h"
 
 #define PI 3.14159265359
 #define PADDLE_STEP 5
@@ -344,7 +345,7 @@ int main(int argc, char *argv[]){
     struct node *parkour = mapgraph->first;
     while(parkour != NULL){
         if(map[parkour->point->y * WIDTH + parkour->point->x]){
-            parkour->point->iswater = 1;
+            parkour->point->is_water = 1;
         }
         parkour = parkour->next;
     }
