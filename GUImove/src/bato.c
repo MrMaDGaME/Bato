@@ -5,6 +5,7 @@
 #include "../../pathfinding/graph.h"
 #include "../../pathfinding/astar.h"
 #include "bot.h"
+#include "bato.h"
 
 #define PI 3.14159265359
 #define PADDLE_STEP 5
