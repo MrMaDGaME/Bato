@@ -31,10 +31,10 @@ float radToDeg(float rad)
 }
 
 void draw_arena(cairo_t *cr);
-gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+gboolean on_draw(cairo_t *cr, gpointer user_data);
 void redraw_item(GtkDrawingArea *area, GdkRectangle *old, GdkRectangle *new);
 gboolean player_move(gpointer user_data);
 gboolean speed_to_sail(gpointer user_data);
-gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
+gboolean on_key_press(GdkEventKey *event, gpointer user_data);
 
 #endif

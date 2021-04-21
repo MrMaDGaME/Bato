@@ -151,7 +151,7 @@ void draw_arena(cairo_t *cr){
     
 }
 
-gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
+gboolean on_draw(cairo_t *cr, gpointer user_data)
 {
   // Gets the 'Game' structure.
   Game *game = user_data;
@@ -262,7 +262,7 @@ gboolean ball_shot(gpointer user_data){
 }
 */
 
-gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data){
+gboolean on_key_press(GdkEventKey *event, gpointer user_data){
     Game *game = user_data;
     gboolean b = FALSE;
 
@@ -298,7 +298,7 @@ gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
     return b;
 }
 
-int main(int argc, char *argv[]){
+int main(){
     struct graph *mapgraph = create_graph();
     struct node *parkour = mapgraph->first;
     while(parkour != NULL){
