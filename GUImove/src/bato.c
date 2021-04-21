@@ -94,7 +94,7 @@ int map[] =
 
 };
 
-void draw_arena(GtkWidget *widget, cairo_t *cr, gpointer user_data){
+void draw_arena(cairo_t *cr){
     int w = 114;
     int h = 76;
 
@@ -164,7 +164,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
   // TODO: Draw the paddles in black.
   // ***********************************************
 
-  draw_arena(widget, cr, user_data);
+  draw_arena(cr);
 
 /*
   cairo_set_source_rgb(cr,0.33,0.2,0);

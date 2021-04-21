@@ -30,7 +30,7 @@ float radToDeg(float rad)
   return rad*57.2957795147;
 }
 
-void draw_arena(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+void draw_arena(cairo_t *cr);
 gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 void redraw_item(GtkDrawingArea *area, GdkRectangle *old, GdkRectangle *new);
 gboolean player_move(gpointer user_data);
