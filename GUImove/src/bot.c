@@ -9,7 +9,7 @@ void bot_move(struct bot boat, struct Stack path){
     struct vector player_dir;
     target_dir.x = target->x - boat.rect.x;
     target_dir.y = target->y - boat.rect.y;
-    player_dir.x = cosf(dir);
-    player_dir.y = - sinf(dir);
+    player_dir.x = cosf(boat.dir);
+    player_dir.y = - sinf(boat.dir);
     
 }

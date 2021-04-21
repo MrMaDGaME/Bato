@@ -7,8 +7,8 @@
 #include "stack.h"
 #include "astar.h"
 
-#define HEIGHT 720
-#define WIDTH 1280
+#define HEIGHT 76
+#define WIDTH 114
 
 struct Stack *pathfinding(struct node *start, struct node *end){
   struct Stack *path = createStack(2 * (HEIGHT + WIDTH));
@@ -49,7 +49,7 @@ struct Stack *pathfinding(struct node *start, struct node *end){
   errx(1, "pathfinding : can't find path");
 }
 
-int main(){
+/*int main(){
   struct graph *map = create_graph();
   struct node *start = map->first;
   struct node *end;
@@ -79,3 +79,4 @@ int main(){
   free(path);
   return 1;
   }
+*/

@@ -94,16 +94,6 @@ int map[] =
 
 };
 
-float degToRad(float deg)
-{
-  return deg/57.2957795147;
-}
-
-float radToDeg(float rad)
-{
-  return rad*57.2957795147;
-}
-
 void draw_arena(GtkWidget *widget, cairo_t *cr, gpointer user_data){
     int w = 114;
     int h = 76;

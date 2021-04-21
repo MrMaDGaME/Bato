@@ -21,5 +21,5 @@ stack: pathfinding/graph.o pathfinding/stack.o
 .PHONY: clean
 
 clean:
-	${RM} graph priority_queue stack astar
+	${RM} graph priority_queue stack astar bot
 	${RM} ${OBJ}

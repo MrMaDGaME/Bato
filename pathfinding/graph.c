@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include "graph.h"
 
-#define HEIGHT 9
-#define WIDTH 16
+#define HEIGHT 76
+#define WIDTH 114
 #define PIXEL_SIZE 10
 
 
