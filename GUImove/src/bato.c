@@ -12,40 +12,6 @@
 #define HEIGHT 76
 #define WIDTH 114
 
-typedef struct Player{
-    GdkRectangle rect;
-    float dir;
-    //float step;
-    float speed;
-    float sail;
-    guint event;
-} Player;
-
-typedef struct Ball{
-    GdkRectangle rect;
-    float dir;
-    float speed;
-    float dis;
-    guint event;
-} Ball;
-
-typedef struct UserInterface
-{
-    GtkWindow* window;              // Main window
-    GtkDrawingArea* area;           // Drawing area
-    /*
-    GtkButton* start_button;        // Start button
-    GtkButton* stop_button;         // Stop button
-    GtkScale* speed_scale;          // Speed scale
-    GtkCheckButton* training_cb;    // Training check box
-    */
-} UserInterface;
-
-typedef struct Game{
-    Player p;
-    UserInterface ui;
-} Game;
-
 int map[] =
 {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
