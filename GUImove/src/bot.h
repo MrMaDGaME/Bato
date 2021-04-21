@@ -1,7 +1,12 @@
-#ifndef GRAPH_H
-#define GRAPH_H
+#ifndef BOT_h
+#define BOT_H
 
-enum Boat = {PIRATE, WAR, GUNPOWDER};
+enum Boat {PIRATE, WAR, GUNPOWDER};
+
+struct vector{
+    float x;
+    float y;
+};
 
 struct bot{
     GdkRectangle rect;
@@ -11,6 +16,6 @@ struct bot{
     enum Boat type;
 };
 
-void move(struct Stack path);
+void bot_move(struct Stack path);
 
 #endif
