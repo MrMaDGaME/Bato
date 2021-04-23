@@ -1,7 +1,8 @@
 #include <math.h>
-#include "bot.h"
+#include <gtk/gtk.h>
 #include "../../pathfinding/stack.h"
 #include "../../pathfinding/astar.h"
+#include "bot.h"
 
 void bot_move(struct bot boat, struct Stack path){
     struct chkpoint *target = pop(path);
@@ -19,13 +20,15 @@ void bot_move(struct bot boat, struct Stack path){
         sqrtf(player_dir.x * player_dir.x + player_dir.y * player_dir.y) *
         sqrtf(target_dir.x * target_dir.x + target_dir.y * target_dir.y);
     
-    if (preangle > 0.0)
-    {angle_dir = 0;
-     angle_value = acos(preangle);}
+    if(preangle > 0.0)
+    {
+        angle_dir = 0;
+        angle_value = acos(preangle);
+    }
     else
-    {angle_dir = 1;
-    angle_value = acos(-(preangle))}
-    
-    
+    {
+        angle_dir = 1;
+        angle_value = acos(-(preangle));
+    }
     
 }
