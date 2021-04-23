@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
+#include "../../pathfinding/stack.h"
 #include "../../pathfinding/graph.h"
 #include "../../pathfinding/astar.h"
 #include "bot.h"
@@ -308,7 +309,7 @@ int main(){
         parkour = parkour->next;
     }
 
-
+    struct bot *ennemi_list = malloc(6 * sizeof(struct bot));
 
     gtk_init(NULL,NULL);
 
@@ -370,5 +371,6 @@ int main(){
     //printf("Drawing_Area Width: %i\nDrawing_Area Height: %i\n", gtk_widget_get_allocated_width(GTK_WIDGET(game.ui.area)), gtk_widget_get_allocated_height(GTK_WIDGET(game.ui.area)));
     gtk_main();
     free_graph(mapgraph);
+    free(ennemi_list);
     return 0;
 }

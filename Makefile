@@ -8,7 +8,7 @@ OBJ = ${SRC:.c=.o}
 
 all: 
 
-bot: pathfinding/graph.o pathfinding/priority_queue.o pathfinding/stack.o pathfinding/astar.o GUImove/src/bato.o GUImove/src/bot.o
+bato: pathfinding/graph.o pathfinding/priority_queue.o pathfinding/stack.o pathfinding/astar.o GUImove/src/bot.o GUImove/src/bato.o
 
 astar: pathfinding/graph.o pathfinding/priority_queue.o pathfinding/stack.o pathfinding/astar.o
 
@@ -21,5 +21,5 @@ stack: pathfinding/graph.o pathfinding/stack.o
 .PHONY: clean
 
 clean:
-	${RM} graph priority_queue stack astar bot
+	${RM} graph priority_queue stack astar bato
 	${RM} ${OBJ}

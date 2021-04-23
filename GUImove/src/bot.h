@@ -1,4 +1,4 @@
-#ifndef BOT_h
+#ifndef BOT_H
 #define BOT_H
 
 enum Boat {PIRATE, WAR, GUNPOWDER};
@@ -14,8 +14,9 @@ struct bot{
     float speed;
     guint event;
     enum Boat type;
+    int hp;
 };
 
-void bot_move(struct Stack path);
+int bot_move(struct bot *boat, struct Stack *path);
 
 #endif
