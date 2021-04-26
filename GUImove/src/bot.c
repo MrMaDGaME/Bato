@@ -7,6 +7,10 @@
 
 #define ROT_STEP 0.025
 
+void bot_spawn(int round){
+    
+}
+
 int bot_move(struct bot *boat, struct Stack *path){
     //return 1 if target is reached, else 0
     struct chkpoint *target = pop(path);

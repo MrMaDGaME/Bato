@@ -1,7 +1,11 @@
 #include <gtk/gtk.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <unistd.h>
+#include <time.h>
 #include "../../pathfinding/stack.h"
 #include "../../pathfinding/graph.h"
 #include "../../pathfinding/astar.h"
@@ -152,8 +156,7 @@ void draw_arena(cairo_t *cr){
     
 }
 
-gboolean on_draw(cairo_t *cr, gpointer user_data)
-{
+gboolean on_draw(cairo_t *cr, gpointer user_data){
   // Gets the 'Game' structure.
   Game *game = user_data;
 
@@ -300,6 +303,7 @@ gboolean on_key_press(GdkEventKey *event, gpointer user_data){
 }
 
 int main(){
+    //création du graphe
     struct graph *mapgraph = create_graph();
     struct node *parkour = mapgraph->first;
     while(parkour != NULL){
@@ -309,10 +313,12 @@ int main(){
         parkour = parkour->next;
     }
 
-    struct bot *ennemi_list = malloc(6 * sizeof(struct bot));
-
+    //Initialisations
     gtk_init(NULL,NULL);
+    SDL_Init(SDL_INIT_VIDEO);
+    srand(time(null));
 
+    //GTK
     GtkBuilder *builder = gtk_builder_new();
 
     GError* error = NULL;
@@ -326,6 +332,21 @@ int main(){
     gtk_window_fullscreen(window);
     GtkDrawingArea* area = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "area"));
 
+    //SDL
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
+    {
+        printf("%s", Mix_GetError());
+    }
+    Mix_Music *musique; //Création du pointeur de type Mix_Music
+     //Chargement de la musique
+    if(Rand()%2){
+        musique = Mix_LoadMUS("../../sounds/sot_music.wav");
+    }
+    else{
+        musique = Mix_LoadMUS("../../sounds/tsfh_music.wav");
+    }
+    Mix_PlayMusic(musique, -1); //Jouer infiniment la musique
+
     /*
     GtkButton* start_button = GTK_BUTTON(gtk_builder_get_object(builder, "start_button"));
     GtkButton* stop_button = GTK_BUTTON(gtk_builder_get_object(builder, "stop_button"));
@@ -335,6 +356,13 @@ int main(){
 
     Game game =
     {
+        .round =
+        {
+            .nb_round = 0,
+            .ennemies_left = 0,
+            .ennemies_in_round = 0,
+        },
+
         .p =
         {
             .rect = {20, 20, 50, 20},
@@ -372,5 +400,8 @@ int main(){
     gtk_main();
     free_graph(mapgraph);
     free(ennemi_list);
+    Mix_FreeMusic(musique); //Libération de la musique
+    Mix_CloseAudio(); //Fermeture de l'API
+    SDL_Quit();
     return 0;
 }

@@ -17,6 +17,8 @@ struct bot{
     int hp;
 };
 
+void bot_spawn(int round);
+
 int bot_move(struct bot *boat, struct Stack *path);
 
 #endif
