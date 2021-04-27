@@ -1,14 +1,14 @@
 CC = gcc -fsanitize=address
 CFLAGS = `pkg-config --cflags gtk+-3.0` -O3 -Wall -Wextra -g
 LDFLAGS =
-LDLIBS = `pkg-config --libs gtk+-3.0` -lm
+LDLIBS = `pkg-config --libs gtk+-3.0` `sdl2-config --libs` -lSDL2_mixer -lm
 
 SRC = pathfinding/graph.c pathfinding/priority_queue.c pathfinding/stack.c pathfinding/astar.c GUImove/src/bato.c GUImove/src/bot.c
 OBJ = ${SRC:.c=.o}
 
 all: 
 
-bato: pathfinding/graph.o pathfinding/priority_queue.o pathfinding/stack.o pathfinding/astar.o GUImove/src/bot.o GUImove/src/bato.o
+GUImove/src/bato: pathfinding/graph.o pathfinding/priority_queue.o pathfinding/stack.o pathfinding/astar.o GUImove/src/bot.o GUImove/src/bato.o
 
 astar: pathfinding/graph.o pathfinding/priority_queue.o pathfinding/stack.o pathfinding/astar.o
 
@@ -21,5 +21,5 @@ stack: pathfinding/graph.o pathfinding/stack.o
 .PHONY: clean
 
 clean:
-	${RM} graph priority_queue stack astar bato
+	${RM} pathfinding/graph pathfinding/priority_queue pathfinding/stack pathfinding/astar GUImove/src/bato
 	${RM} ${OBJ}

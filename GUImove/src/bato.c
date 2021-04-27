@@ -17,6 +17,7 @@
 #define MAX_SAIL 5
 #define HEIGHT 76
 #define WIDTH 114
+#define PIXEL_SIZE 10
 
 int map[] =
 {
@@ -307,7 +308,7 @@ int main(){
     struct graph *mapgraph = create_graph();
     struct node *parkour = mapgraph->first;
     while(parkour != NULL){
-        if(map[parkour->point->y * WIDTH + parkour->point->x]){
+        if(map[(parkour->point->y/PIXEL_SIZE) * WIDTH + (parkour->point->x/PIXEL_SIZE)]){
             parkour->point->is_water = 1;
         }
         parkour = parkour->next;
@@ -316,7 +317,7 @@ int main(){
     //Initialisations
     gtk_init(NULL,NULL);
     SDL_Init(SDL_INIT_VIDEO);
-    srand(time(null));
+    srand(time(NULL));
 
     //GTK
     GtkBuilder *builder = gtk_builder_new();
@@ -339,7 +340,7 @@ int main(){
     }
     Mix_Music *musique; //Création du pointeur de type Mix_Music
      //Chargement de la musique
-    if(Rand()%2){
+    if(rand()%2){
         musique = Mix_LoadMUS("../../sounds/sot_music.wav");
     }
     else{
@@ -399,7 +400,6 @@ int main(){
     //printf("Drawing_Area Width: %i\nDrawing_Area Height: %i\n", gtk_widget_get_allocated_width(GTK_WIDGET(game.ui.area)), gtk_widget_get_allocated_height(GTK_WIDGET(game.ui.area)));
     gtk_main();
     free_graph(mapgraph);
-    free(ennemi_list);
     Mix_FreeMusic(musique); //Libération de la musique
     Mix_CloseAudio(); //Fermeture de l'API
     SDL_Quit();

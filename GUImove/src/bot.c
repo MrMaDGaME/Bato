@@ -8,7 +8,8 @@
 #define ROT_STEP 0.025
 
 void bot_spawn(int round){
-    
+    (void)round;
+    return;
 }
 
 int bot_move(struct bot *boat, struct Stack *path){

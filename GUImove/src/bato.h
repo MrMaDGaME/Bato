@@ -1,6 +1,13 @@
 #ifndef BATO_H
 #define BATO_H
 
+typedef struct Round
+{
+    int nb_round;
+    int ennemies_left;
+    int ennemies_in_round;
+} Round;
+
 typedef struct Player{
     GdkRectangle rect;
     float dir;
@@ -16,6 +23,7 @@ typedef struct UserInterface
 } UserInterface;
 
 typedef struct Game{
+    Round round;
     Player p;
     UserInterface ui;
 } Game;
