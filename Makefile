@@ -1,4 +1,4 @@
-CC = gcc -fsanitize=address
+CC = gcc
 CFLAGS = `pkg-config --cflags gtk+-3.0` -O3 -Wall -Wextra -g
 LDFLAGS =
 LDLIBS = `pkg-config --libs gtk+-3.0` `sdl2-config --libs` -lSDL2_mixer -lm

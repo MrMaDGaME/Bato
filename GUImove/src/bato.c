@@ -6,6 +6,8 @@
 #include <math.h>
 #include <unistd.h>
 #include <time.h>
+#include <pthread.h>
+#include <err.h>
 #include "../../pathfinding/stack.h"
 #include "../../pathfinding/graph.h"
 #include "../../pathfinding/astar.h"
@@ -365,6 +367,37 @@ gboolean on_key_press(GdkEventKey *event, gpointer user_data){
     return b;
 }
 
+void *worker()
+{
+    srand(time(NULL));
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
+    {
+        printf("%s", Mix_GetError());
+    }
+    Mix_Music *musique; //Création du pointeur de type Mix_Music
+    //Chargement de la musique
+    if(rand()%2){
+        musique = Mix_LoadMUS("../../sounds/sot_music.wav");
+    }
+    else{
+        musique = Mix_LoadMUS("../../sounds/tsfh_music.wav");
+    }
+    Mix_PlayMusic(musique, -1); //Jouer infiniment la musique*/
+    return EXIT_SUCCESS;
+}
+
+static gboolean sound_player()
+{
+  pthread_t thr;
+  int e = pthread_create(&thr,NULL,worker,NULL);
+  if(e != 0)
+  {
+    errno = e;
+    err(EXIT_FAILURE,"pthead create()");
+  }
+  return TRUE;
+}
+
 int main(){
     //création du graphe
     struct graph *mapgraph = create_graph();
@@ -378,14 +411,12 @@ int main(){
 
     //Initialisations
     gtk_init(NULL,NULL);
-    SDL_Init(SDL_INIT_VIDEO);
-    srand(time(NULL));
 
     //GTK
     GtkBuilder *builder = gtk_builder_new();
 
     GError* error = NULL;
-    if(gtk_builder_add_from_file(builder, "bato.glade", &error) == 0){
+    if(gtk_builder_add_from_file(builder, "GUImove/src/bato.glade", &error) == 0){
         g_printerr("Error loading file: %s\n", error->message);
         g_clear_error(&error);
         return 1;
@@ -396,7 +427,7 @@ int main(){
     GtkDrawingArea* area = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "area"));
 
     //SDL
-    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
+    /*if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
     {
         printf("%s", Mix_GetError());
     }
@@ -408,7 +439,7 @@ int main(){
     else{
         musique = Mix_LoadMUS("../../sounds/tsfh_music.wav");
     }
-    Mix_PlayMusic(musique, -1); //Jouer infiniment la musique
+    Mix_PlayMusic(musique, -1); //Jouer infiniment la musique*/
 
     /*
     GtkButton* start_button = GTK_BUTTON(gtk_builder_get_object(builder, "start_button"));
@@ -434,8 +465,7 @@ int main(){
             .speed = 0,
             .sail = 0,
             .event = 0,
-            .health = 100,
-            
+            //.health = 100,
         },
 
         .ui =
@@ -451,21 +481,22 @@ int main(){
         },
     };
 
-    
+
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(area, "draw", G_CALLBACK(on_draw), &game);
     g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press), &game);
+    g_signal_connect(window, "focus_in_event", G_CALLBACK(sound_player), NULL);
 
     g_timeout_add(100, speed_to_sail, &game);
 
     game.p.event = g_timeout_add(100, player_move, &game);
-    
-    
+
+
     //printf("Drawing_Area Width: %i\nDrawing_Area Height: %i\n", gtk_widget_get_allocated_width(GTK_WIDGET(game.ui.area)), gtk_widget_get_allocated_height(GTK_WIDGET(game.ui.area)));
     gtk_main();
     free_graph(mapgraph);
-    Mix_FreeMusic(musique); //Libération de la musique
-    Mix_CloseAudio(); //Fermeture de l'API
-    SDL_Quit();
+    //Mix_FreeMusic(musique); //Libération de la musique
+    //Mix_CloseAudio(); //Fermeture de l'API
+    //SDL_Quit();
     return 0;
 }
