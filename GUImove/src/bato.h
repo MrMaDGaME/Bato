@@ -43,6 +43,7 @@ gboolean on_draw(cairo_t *cr, gpointer user_data);
 void redraw_item(GtkDrawingArea *area, GdkRectangle *old, GdkRectangle *new);
 gboolean player_move(gpointer user_data);
 gboolean speed_to_sail(gpointer user_data);
+gboolean colision (gpointer user_data);
 gboolean on_key_press(GdkEventKey *event, gpointer user_data);
 
 #endif
