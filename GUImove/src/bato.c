@@ -264,7 +264,7 @@ gboolean colision (gpointer user_data){
     {
         if (gdk_rectangle_intersect(game->p.rect,"tableau de bot",NULL))  //faire le tableau de bot
         {
-            if ("bot" == "poudre")
+            if ("bot" == "GUNPOWDER")
             { game->p.health-= 50; }
             else
             {
@@ -276,7 +276,7 @@ gboolean colision (gpointer user_data){
         }
         if (gdk_rectangle_intersect(ball.rect,"tableau de bot",NULL))
         {
-            if ("bot" == "poudre")
+            if ("bot" == "GUNPOWDER")
             { game->"bot".health-= 25; }
             else
             { game->"bot".health-= 10; }
