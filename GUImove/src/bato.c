@@ -129,7 +129,6 @@ void draw_arena(cairo_t *cr){
     /*
     int x[] = {16, 16, 16, 16, 15, 15, 16, 15, 16, 14, 13, 12, 13, 14, 15, 15, 14, 15, 16, 17, 18, 19, 20, 21, 21, 20, 21, 21, 20, 19, 18, 17};
     int y[] = {14, 15, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 22, 22, 23, 24, 25, 26, 26, 25, 25, 26, 26, 26, 25, 24, 23, 22, 22, 21, 20, 20};
-
     for(int i = 0; i < 32; i++){
         for(int j = 0; j < 32; i++){
             map[y[i]*w+x[j]] = 1;
@@ -142,14 +141,15 @@ void draw_arena(cairo_t *cr){
             if(map[i*w+j] == 1 /*|| map[i*w+j] == 2*/){
                 cairo_set_source_rgb(cr,0.32,0.57,0.35);
                 cairo_rectangle(cr, j*10, i*10, 10, 10);
-                cairo_fill(cr);                
+                cairo_fill(cr);
+                
             }
 
             
             if(map[i*w+j] == 2){
                 cairo_set_source_rgb(cr,1,0.84,0.57);
                 cairo_rectangle(cr, j*10, i*10, 10, 10);
-                cairo_fill(cr); 
+                cairo_fill(cr);
             }
             
         }
@@ -174,7 +174,7 @@ gboolean on_draw(cairo_t *cr, gpointer user_data){
 /*
   cairo_set_source_rgb(cr,0.33,0.2,0);
   cairo_rectangle(cr, game->p.rect.x, game->p.rect.y,
-		  game->p.rect.width, game->p.rect.height);
+          game->p.rect.width, game->p.rect.height);
   cairo_fill(cr);
   cairo_rotate(cr,45);
 */
@@ -217,7 +217,7 @@ void redraw_item(GtkDrawingArea *area, GdkRectangle *old, GdkRectangle *new)
   gdk_rectangle_union(old, new, old);
 
   gtk_widget_queue_draw_area(GTK_WIDGET(area),
-			     (*old).x-((*old).width*2), (*old).y-((*old).width*2), (*old).width*4,(*old).width*4);
+                 (*old).x-((*old).width*2), (*old).y-((*old).width*2), (*old).width*4,(*old).width*4);
 }
 
 gboolean player_move(gpointer user_data){
@@ -250,20 +250,74 @@ gboolean speed_to_sail(gpointer user_data){
     return TRUE;
 }
 
+gboolean colision (gpointer user_data){
+    Game *game = user_data;
+/*
+    if (gdk_rectangle_intersect(game->p.rect,ball.rect,NULL))
+    {
+        game->p.health-= 10;
+        //undraw the ball
+        
+    }
+    
+    for (int i = 0; i < game->round.ennemies_left;i++)
+    {
+        if (gdk_rectangle_intersect(game->p.rect,"tableau de bot",NULL))  //faire le tableau de bot
+        {
+            if ("bot" == "poudre")
+            { game->p.health-= 50; }
+            else
+            {
+                game->p.health-= 10;
+                game->"bot".health-= 15;
+                game->p.speed = 0.1;
+                game->"bot".speed = 0.1;
+            }
+        }
+        if (gdk_rectangle_intersect(ball.rect,"tableau de bot",NULL))
+        {
+            if ("bot" == "poudre")
+            { game->"bot".health-= 25; }
+            else
+            { game->"bot".health-= 10; }
+            //undraw the ball
+        }
+    }
+    if (gdk_rectangle_intersect(game->p.rect,"tableau île",NULL))        // a faire simon "rect" pour chaque île, peut être un tableau pou chaque case a voir
+    {
+        GdkRectangle old = game->p.rect;
+        game->p.health-= 10;
+        game->p.rect.y = game->p.rect.y - (game->p.speed * sinf(game->p.dir));
+        game->p.rect.x = game->p.rect.x - (game->p.speed * cosf(game->p.dir));
+
+        redraw_item(game->ui.area, &old, &game->p.rect);
+        
+    }
+    
+
+     */
+    return TRUE;
+}
 /*
 gboolean ball_shot(gpointer user_data){
     Game *game = user_data;
-
     Ball ball =
     {
-        .rect = {game->p.rect.x, game->p.rect.y, 10, 10},
+        .rect = {game->p.rect.x + 1, game->p.rect.y+1, 5, 5},
         .dir = game->p.dir + 90,
         .speed = 1,
-        .dis = 1000,
+        .dis = 0, //1000 arrêt
         .event = 0,
     };
-
-
+ 
+    if (gdk_rectangle_intersect(ball.rect,"tableau de bot",NULL))
+    {
+        if ("bot" == "poudre")
+        { game->"bot".health-= 25; }
+        else
+        { game->"bot".health-= 10; }
+        //undraw the ball
+    }
 }
 */
 
@@ -296,6 +350,14 @@ gboolean on_key_press(GdkEventKey *event, gpointer user_data){
         
         b = TRUE;
     }
+    /*
+    if(event->keyval == GDK_KEY_space)
+    {
+        
+        ball_shot(gpointer user_data);
+        b = TRUE;
+    }
+     */
     if(game->p.sail < 0.05){
         game->p.sail = 0;
     }
@@ -372,13 +434,15 @@ int main(){
             .speed = 0,
             .sail = 0,
             .event = 0,
+            .health = 100,
+            
         },
 
         .ui =
         {
             .window = window,
             .area = area,
-            /*                
+            /*
             .start_button = start_button,
             .stop_button = stop_button,
             .speed_scale = speed_scale,
