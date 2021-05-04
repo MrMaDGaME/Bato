@@ -1,6 +1,6 @@
 # Bato
 
-in order to run Bato, you have to:
+In order to run Bato, you have to:
 
 -from the directory "Bato", use the command "make".
 
