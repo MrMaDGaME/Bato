@@ -559,7 +559,7 @@ gboolean colision (gpointer user_data){
 
 
 
-int main(int argc, char *argv[]){
+int main(){
     gtk_init(NULL,NULL);
 
     GtkBuilder *builder = gtk_builder_new();
