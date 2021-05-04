@@ -2,6 +2,13 @@
 #define BATO_H
 
 //#define BOAT_RECTS 13
+typedef struct Ball{
+    GdkRectangle rect;
+    float dir;
+    float speed;
+    float dis;
+    guint event;
+} Ball;
 
 typedef struct Player{
     GdkRectangle rect;
@@ -9,8 +16,14 @@ typedef struct Player{
     int hp;
     float speed;
     float sail;
+    struct Ball ball;
     guint event;
 } Player;
+
+typedef struct Isle{
+    GdkRectangle rect[];
+} Isle;
+
 
 typedef struct UserInterface
 {
