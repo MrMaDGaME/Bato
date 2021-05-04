@@ -36,6 +36,7 @@ typedef struct UserInterface
 typedef struct Game{
     Player p;
     UserInterface ui;
+    Isle island;
 } Game;
 
 float degToRad(float deg)
