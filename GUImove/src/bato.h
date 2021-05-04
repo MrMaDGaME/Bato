@@ -21,7 +21,7 @@ typedef struct Player{
 } Player;
 
 typedef struct Isle{
-    GdkRectangle rect[];
+    GdkRectangle rect[819];
 } Isle;
 
 
