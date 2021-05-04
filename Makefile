@@ -8,7 +8,7 @@ OBJ = ${SRC:.c=.o}
 
 all: 
 
-GUImove/src/bato: pathfinding/graph.o pathfinding/priority_queue.o pathfinding/stack.o pathfinding/astar.o GUImove/src/bot.o GUImove/src/bato.o
+GUImove/src/bato: pathfinding/graph.o pathfinding/priority_queue.o pathfinding/stack.o pathfinding/astar.o GUImove/src/bato.o
 
 astar: pathfinding/graph.o pathfinding/priority_queue.o pathfinding/stack.o pathfinding/astar.o
 
