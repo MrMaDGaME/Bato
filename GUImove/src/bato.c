@@ -96,6 +96,8 @@ int mapping[] =
 
 
 void draw_arena(GtkWidget *widget, cairo_t *cr, gpointer user_data){
+    (void)widget;
+
     Game *game = user_data;
   
     int w = 114;
@@ -258,7 +260,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
   int x = game->p.rect.x;
   int y = game->p.rect.y;
 
-  cairo_set_source_rgb(cr, 0.33, 0.2, 0);
+  cairo_set_source_rgb(cr, 1, 0, 1);
 
   cairo_move_to (cr, x+w/2, y+h/2);
   cairo_rel_line_to(cr, sinf(dir)*h/2, -cosf(dir)*h/2);
@@ -401,6 +403,8 @@ gboolean progress_bar(gpointer user_data){
 
 
 gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data){
+    (void)widget;
+
     Game *game = user_data;
     gboolean b = FALSE;
 
