@@ -2,7 +2,7 @@
 
 in order to run Bato, you have to:
 
--from the directory "Bato", use the command "make GUImove/src/bato".
+-from the directory "Bato", use the command "make".
 
 ->move to the directory src via command "cd GUImove/src/".
 
