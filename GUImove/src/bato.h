@@ -1,3 +1,9 @@
+#include "bot.h"
+#include <gtk/gtk.h>
+#include <stdio.h>
+#include <math.h>
+#include <unistd.h>
+
 #ifndef BATO_H
 #define BATO_H
 
@@ -34,6 +40,7 @@ typedef struct UserInterface
 } UserInterface;
 
 typedef struct Game{
+  struct bot bot_list[6];
     Player p;
     UserInterface ui;
     Isle island;

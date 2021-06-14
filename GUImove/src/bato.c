@@ -1,7 +1,3 @@
-#include <gtk/gtk.h>
-#include <stdio.h>
-#include <math.h>
-#include <unistd.h>
 #include "bato.h"
 
 #define PI 3.14159265359
@@ -582,6 +578,7 @@ int main(){
 
     Game game =
     {
+      .bot_list = NULL,
         .p =
         {
             .rect = {BOAT_INIT_X, BOAT_INIT_Y, BOAT_WIDTH, BOAT_HEIGHT},
@@ -615,7 +612,9 @@ int main(){
 	},
     };
 
+
     
+    g_signal_connect(area, "draw", G_CALLBACK(bot_spawn), &game);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(area, "draw", G_CALLBACK(on_draw), &game);
     g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press), &game);
