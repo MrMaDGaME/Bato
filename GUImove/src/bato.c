@@ -1,4 +1,3 @@
-#include "bato.h"
 #include "bot.h"
 
 #define PI 3.14159265359

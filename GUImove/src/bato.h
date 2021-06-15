@@ -1,4 +1,4 @@
-//#include "bot.h"
+#include "bot.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <math.h>

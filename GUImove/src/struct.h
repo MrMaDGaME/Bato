@@ -35,6 +35,7 @@ typedef struct bot{
     guint event;
     enum Boat type;
     int hp;
+    struct Ball ball;
 } bot;
 
 typedef struct Isle{
