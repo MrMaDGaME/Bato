@@ -1,4 +1,6 @@
 #include "bot.h"
+#include <stdlib.h>
+#include <unistd.h>
 
 #define ROT_STEP 0.025
 #define BOAT_WIDTH 44
@@ -9,36 +11,44 @@
 
 
 void bot_spawn(gpointer user_data, cairo_t *cr, int bot_index, enum Boat type){
-  struct Game *game = user_data;
-  struct bot new_bot;
-  int x;
-  int y;
-  switch(bot_index){
-  case 0: x = 50; y = 50; break;
-  case 1: x = WIDTH/2; y = 50; break;
-  case 2: x = WIDTH - 50 - BOAT_WIDTH; y = 50 ; break;
-  case 3: x = 50; y = HEIGHT - 50 - BOAT_HEIGHT; break;
-  case 4: x = WIDTH/2; y = HEIGHT - 50 - BOAT_HEIGHT; break;
-  case 5: x = WIDTH - 50 - BOAT_WIDTH; y = HEIGHT - 50 - BOAT_HEIGHT; break;
-  };
-  new_bot.rect = {x, y, x + BOAT_WIDTH, y + BOAT_HEIGHT};
-  if(bot_index < 3){
-    new_bot.dir = PI/2;
-  }
-  else{
-    new_bot.dir = -PI/2;
-  }
-  new_bot.speed = 0;
-  new_bot.type = type;
-  switch(type){
-  case GUNPOWDER: new_bot.hp = 10; break;
-  case WAR: new_bot.hp = 50; break;
-  case PIRATE: new_bot.hp = 20; break;
-  }
-  new_bot.event = 0;
-  game->bot_list[bot_index] = new_bot;
+    Game *game = user_data;
+    struct bot *new_bot = malloc(sizeof(struct bot));
+    int x = 0;
+    int y = 0;
 
-  int dir = 0;
+    switch(bot_index){
+        case 0: x = 50; y = 50; break;
+        case 1: x = WIDTH/2; y = 50; break;
+        case 2: x = WIDTH - 50 - BOAT_WIDTH; y = 50 ; break;
+        case 3: x = 50; y = HEIGHT - 50 - BOAT_HEIGHT; break;
+        case 4: x = WIDTH/2; y = HEIGHT - 50 - BOAT_HEIGHT; break;
+        case 5: x = WIDTH - 50 - BOAT_WIDTH; y = HEIGHT - 50 - BOAT_HEIGHT; break;
+    };
+
+    GdkRectangle rct = {x, y, x + BOAT_WIDTH, y + BOAT_HEIGHT};
+    new_bot->rect = rct;
+
+
+    if(bot_index < 3){
+        new_bot->dir = PI/2;
+    }
+    else{
+        new_bot->dir = -PI/2;
+    }
+
+    new_bot->speed = 0;
+    new_bot->type = type;
+
+    switch(type){
+        case GUNPOWDER: new_bot->hp = 10; break;
+        case WAR: new_bot->hp = 50; break;
+        case PIRATE: new_bot->hp = 20; break;
+    }
+
+    new_bot->event = 0;
+    game->bot_list[bot_index] = *new_bot;
+
+    int dir = 0;
 
     cairo_set_source_rgb(cr, 1, 0, 1);
 
