@@ -471,37 +471,61 @@ gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 
 gboolean colision (gpointer user_data){
     Game *game = user_data;
-/*
-    if (gdk_rectangle_intersect(game->p.rect,ball.rect,NULL))
-    {
-        game->p.health-= 10;
-        //undraw the ball
-        
-    }
-    
-    for (int i = 0; i < game->round.ennemies_left;i++)
-    {
-        if (gdk_rectangle_intersect(game->p.rect,"tableau de bot",NULL))  //faire le tableau de bot
-        {
-            if ("bot" == "poudre")
-            { game->p.health-= 50; }
+	
+	
+    for (int i = 0; i < 6;i++)
+      {
+        if (gdk_rectangle_intersect(&game->p.rect,&game->bot_list[i].rect,NULL))  
+	  {
+            if (game->bot_list[i].type == GUNPOWDER)
+	      {
+		game->p.health-= 25;
+		game->bot_list[i].hp-= 25;
+	      }
             else
-            {
-                game->p.health-= 10;
-                game->"bot".health-= 10;
-                game->p.speed -= 0.5;
-                game->"bot".speed -= 0.5;
-            }
-        }
-        if (gdk_rectangle_intersect(ball.rect,"tableau de bot",NULL))
-        {
-            if ("bot" == "poudre")
-            { game->"bot".health-= 10; }
-            else
-            { game->"bot".health-= 10; }
-            //undraw the ball
-        }
-    }*/
+	      {
+               if (game->p.speed >= game->bot_list[i].speed)
+                {
+                game->bot_list[i].health-= 10;
+		game->p.sail = 0;
+                game->bot_list[i].sail = 0;
+                game->p.speed = -3;
+                game->bot_list[i].speed = -1;
+		}
+		else
+		{
+		game->p.health-= 10;
+		game->p.sail = 0;
+                game->bot_list[i].sail = 0;
+                game->p.speed = -1;
+                game->bot_list[i].speed = -3
+		}
+	      }
+	  }
+        if (gdk_rectangle_intersect(&game->p.ball.rect,&game->bot_list[i].rect,NULL))
+	  {
+	    GdkRectangle old = game->p.ball.rect;  
+	    game->bot_list[i].hp-= 5;
+	    game->p.ball.dis = 0;
+	    game->p.ball.rect.x = -5;
+	    game->p.ball.rect.y = -5;
+	    game->p.ball.dir = 0;
+	    game->p.ball.speed = 0;  
+	    redraw_item(game->ui.area, &old, &game->p.ball.rect);
+            
+	  }
+	if (gdk_rectangle_intersect(&game->bot_list[i].ball.rect,&game->p.rect,NULL))
+	  {
+	    GdkRectangle old = game->bot_list[i].ball.rect;  
+	    game->p.hp-= 5;
+	    game->bot_list[i].ball.dis = 0;
+	    game->bot_list[i].ball.rect.x = 1;
+	    game->bot_list[i].ball.rect.y = 1;
+	    game->bot_list[i].ball.dir = 0;
+	    game->bot_list[i].ball.speed = 0;  
+	    redraw_item(game->ui.area, &old, &game->bot_list[i].ball.rect);
+	  }
+      }
     GdkRectangle player = game->p.rect;
     GdkRectangle up_map = {0,0,1140,1};
     GdkRectangle left_map = {0,0,1,760};
