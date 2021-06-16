@@ -467,7 +467,17 @@ gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 
     return b;
 }
-
+gboolean is_bot_dead(gpointer user_data){
+  Game *game = user_data;
+  for (int i = 0; i < 6;i++)
+      {
+	if (game->bot_list[i].hp <= 0)
+	  {
+	    //Kill bot(game,i);
+	  }
+      }
+  return True;
+}
 
 gboolean colision (gpointer user_data){
     Game *game = user_data;
@@ -738,7 +748,7 @@ int main(){
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(area, "draw", G_CALLBACK(on_draw), &game);
     g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press), &game);
-
+    g_timeout_add(100, is_bot_dead, &game);
     g_timeout_add(100, speed_to_sail, &game);
     g_timeout_add(100, progress_bar, &game);
     g_timeout_add(100, colision, &game);
