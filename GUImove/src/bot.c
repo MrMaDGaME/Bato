@@ -7,6 +7,22 @@
 #define WIDTH 1140
 #define PI 3.14159265359
 
+double modula(double x, double y)
+{
+    /*x modulo y*/
+    x-=y*abs(x/y);
+    if (x>=0.) return (x);
+    else return (x+y);
+}       
+
+
+void redro_item(GtkDrawingArea *area, GdkRectangle *old, GdkRectangle *new)
+{
+  gdk_rectangle_union(old, new, old);
+
+  gtk_widget_queue_draw_area(GTK_WIDGET(area),
+			     (*old).x-((*old).width*2), (*old).y-((*old).width*2), (*old).width*4,(*old).width*4);
+}
 
 void new_round(struct Game *game){
   game->round += 1;
@@ -58,14 +74,14 @@ void spawn_bot(struct Game *game, int bot_index){
   GdkRectangle old = game->bot_list[bot_index].rect;
   game->bot_list[bot_index].rect.x = x;
   game->bot_list[bot_index].rect.y = y;
-  redraw_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
+  redro_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
 }
 
 void bot_kill(struct Game *game, int bot_index){
   GdkRectangle old = game->bot_list[bot_index].rect;
   game->bot_list[bot_index].rect.x = game->bot_list[bot_index].spawn_point.x;
   game->bot_list[bot_index].rect.y = game->bot_list[bot_index].spawn_point.y;
-  redraw_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
+  redro_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
   game->bot_list[bot_index].alive = 0;
   game->bot_list[bot_index].dir = 0;
   game->bot_list[bot_index].speed = 0;
@@ -84,79 +100,13 @@ void bot_kill(struct Game *game, int bot_index){
   }
 }
 
-/*void bot_spawn(gpointer user_data, cairo_t *cr, int bot_index, enum Boat type){
-    Game *game = user_data;
-    struct bot *new_bot = malloc(sizeof(struct bot));
-    int x = 0;
-    int y = 0;
 
-    switch(bot_index){
-        case 0: x = 50; y = 50; break;
-        case 1: x = WIDTH/2; y = 50; break;
-        case 2: x = WIDTH - 50 - BOAT_WIDTH; y = 50 ; break;
-        case 3: x = 50; y = HEIGHT - 50 - BOAT_HEIGHT; break;
-        case 4: x = WIDTH/2; y = HEIGHT - 50 - BOAT_HEIGHT; break;
-        case 5: x = WIDTH - 50 - BOAT_WIDTH; y = HEIGHT - 50 - BOAT_HEIGHT; break;
-    };
-
-    GdkRectangle rct = {x, y, x + BOAT_WIDTH, y + BOAT_HEIGHT};
-    new_bot->rect = rct;
-
-
-    if(bot_index < 3){
-        new_bot->dir = PI/2;
+void bot_move(struct Game *game, int bot_index){
+    if(game->bot_list[bot_index].path == NULL){
+      return;
     }
-    else{
-        new_bot->dir = -PI/2;
-    }
-
-    new_bot->speed = 0;
-    new_bot->type = type;
-
-    switch(type){
-        case GUNPOWDER: new_bot->hp = 10; break;
-        case WAR: new_bot->hp = 50; break;
-        case PIRATE: new_bot->hp = 20; break;
-    }
-
-    new_bot->event = 0;
-    struct Ball ball =
-      {
-	.rect = {1, 1, 5, 5},
-	.dir = 0,
-	.speed = 0,
-	.dis = 0, //1000 arrêt
-	.event = 0,
-      };
-    new_bot->ball = ball;
-    
-    game->bot_list[bot_index] = *new_bot;
-
-    int dir = 0;
-
-    cairo_set_source_rgb(cr, 1, 0, 1);
-
-    cairo_move_to (cr, x+BOAT_WIDTH/2, y+BOAT_HEIGHT/2);
-    cairo_rel_line_to(cr, sinf(dir)*BOAT_HEIGHT/2, -cosf(dir)*BOAT_HEIGHT/2);
-    cairo_rel_line_to(cr, -cosf(dir)*BOAT_WIDTH/2, -sinf(dir)*BOAT_WIDTH/2);
-    cairo_rel_line_to(cr, -sinf(dir)*BOAT_HEIGHT, cosf(dir)*BOAT_HEIGHT);
-    cairo_rel_line_to(cr, cosf(dir)*BOAT_WIDTH/2, sinf(dir)*BOAT_WIDTH/2);
-    cairo_close_path (cr);
-    cairo_fill(cr);
-
-    cairo_move_to (cr, x+BOAT_WIDTH/2, y+BOAT_HEIGHT/2);
-    cairo_rel_line_to(cr, sinf(dir)*BOAT_HEIGHT/2, -cosf(dir)*BOAT_HEIGHT/2);
-    cairo_rel_line_to(cr, cosf(dir)*BOAT_WIDTH/2, sinf(dir)*BOAT_WIDTH/2);
-    cairo_rel_line_to(cr, -sinf(dir)*BOAT_HEIGHT, cosf(dir)*BOAT_HEIGHT);
-    cairo_rel_line_to(cr, -cosf(dir)*BOAT_WIDTH/2, -sinf(dir)*BOAT_WIDTH/2);
-    cairo_close_path (cr);
-    cairo_fill(cr);
-}
-*/
-int bot_move(struct Game *game, int bot_index){
-    //return 1 if target is reached, else 0
-    struct chkpoint *target = peek(path);
-  struct bot boat = game->bot_list[bot_index];
+    struct chkpoint *target = peek(game->bot_list[bot_index].path);
+    struct bot boat = game->bot_list[bot_index];
     struct vector target_dir;
     struct vector player_dir;
     target_dir.x = target->x - boat.rect.x;
@@ -166,8 +116,8 @@ int bot_move(struct Game *game, int bot_index){
 
     if(!target_dir.x && !target_dir.y){
         boat.speed = 0;
-	pop(path);
-        return 1;
+	      pop(game->bot_list[bot_index].path);
+        return;
     }
     
     int angle_dir; //give the direction of the angle: 0 is right, 1 is left
@@ -208,7 +158,16 @@ int bot_move(struct Game *game, int bot_index){
     else{
         boat.speed = 5;
     }
-    return 0;
+
+    GdkRectangle old = game->bot_list[bot_index].rect;
+            
+    game->bot_list[bot_index].rect.y = game->bot_list[bot_index].rect.y + (game->bot_list[bot_index].speed * sinf(game->bot_list[bot_index].dir));
+    game->bot_list[bot_index].rect.x = game->bot_list[bot_index].rect.x + (game->bot_list[bot_index].speed * cosf(game->bot_list[bot_index].dir));
+
+    game->bot_list[bot_index].dir = modula(game->bot_list[bot_index].dir, 2*PI);
+
+    redro_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
+    return;
 }
 
 

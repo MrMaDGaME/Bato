@@ -68,6 +68,7 @@ float radToDeg(float rad)
   return rad*57.2957795147;
 }
 
+double modulo(double x, double y);
 void draw_arena(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 void redraw_item(GtkDrawingArea *area, GdkRectangle *old, GdkRectangle *new);

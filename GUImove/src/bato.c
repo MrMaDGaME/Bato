@@ -9,8 +9,8 @@
 #define BOAT_HEIGHT 20
 #define BOAT_INIT_X 500
 #define BOAT_INIT_Y 250
-#define HEIGHT 760
-#define WIDTH 1140
+#define HEIGHT 76
+#define WIDTH 114
 
 int mapping[] =
 {
@@ -289,6 +289,20 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
   cairo_rectangle(cr,game->p.ball.rect.x,game->p.ball.rect.y,game->p.ball.rect.width,game->p.ball.rect.height);
   cairo_fill(cr);
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  int i = 0;
+  int a = game->bot_list[i].rect.x;
+  int b = game->bot_list[i].rect.y;
+  int l = 10;
+  int m = 10;
+  cairo_move_to (cr, a, b);
+  cairo_rel_line_to(cr, l, 0);
+  cairo_rel_line_to(cr, 0, m);
+  cairo_rel_line_to(cr, -l, 0);
+  cairo_close_path (cr);
+  cairo_fill(cr);
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   GdkPixbuf *pix;
   GError *err = NULL;
   GdkPixbuf *sp0, *sp45, *sp22h, *sp22b;
@@ -448,6 +462,65 @@ gboolean player_move(gpointer user_data){
     return TRUE;
 }
 
+
+
+gboolean path_compute(gpointer user_data){
+    Game *game = user_data;
+    for(int i = 0; i < 6; i++){
+            struct node *start = NULL;
+            struct node *end = NULL; 
+            struct node *parkour = game->graph->first;
+            while(parkour != NULL){
+	            if(parkour->point->y == (game->p.rect.y/10)*10 && parkour->point->x == (game->p.rect.x/10)*10){
+		            end = parkour;
+                }
+                if(parkour->point->y == (game->bot_list[i].rect.y/10)*10 && parkour->point->x == (game->bot_list[i].rect.x/10)*10){
+                    start = parkour;
+                }
+                parkour = parkour->next;
+            }
+            struct Stack *path = pathfinding(start, end);
+            if(path){
+                game->bot_list[i].path = path;
+            }
+    }
+
+    return TRUE;
+}
+
+
+gboolean move_robot(gpointer user_data){
+    Game *game = user_data;
+    int i = 0;
+
+    if(game->bot_list[i].path != NULL){
+        if(!isEmpty_stack(game->bot_list[i].path)){
+        struct chkpoint *cp = pop(game->bot_list[i].path);
+        GdkRectangle old = game->bot_list[i].rect;
+
+        game->bot_list[i].rect.x = cp->x;
+        game->bot_list[i].rect.y = cp->y;
+
+        redraw_item(game->ui.area, &old, &game->bot_list[i].rect);
+        }
+    }
+
+    return TRUE;
+}
+
+
+gboolean move_bots(gpointer user_data){
+    Game *game = user_data;
+
+    //for(int i = 0; i < 6; i++){
+        bot_move(game, 0);
+    //}
+
+    return TRUE;
+}
+
+
+
 gboolean ball_move(gpointer user_data){
      Game *game = user_data;
      
@@ -561,7 +634,7 @@ gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
         game->p.speed = 0;
     }
 
-    printf("Vitesse: %f\n", game->p.speed);
+    printf("Joueur: x = %i, y = %i\n", (game->p.rect.x/10)*10, (game->p.rect.y/10)*10);
 
     return b;
 }
@@ -695,9 +768,19 @@ gboolean colision (gpointer user_data){
 }
 
 
-
-
 int main(){
+
+    //création du graphe
+    struct graph *mapgraph = create_graph();
+    struct node *parkour = mapgraph->first;
+    while(parkour != NULL){
+        if(mapping[(parkour->point->y/10) * WIDTH + (parkour->point->x/10)]){
+            parkour->point->is_water = 1;
+        }
+        parkour = parkour->next;
+    }
+
+
     gtk_init(NULL,NULL);
 
     GtkBuilder *builder = gtk_builder_new();
@@ -714,108 +797,159 @@ int main(){
     GtkProgressBar *lifebar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "lifebar"));
     GtkProgressBar *sailbar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "sailbar"));
 
-    Game game =
-      {
-	.round = 1,
-	.nb_bots = 1,
-	.bots_left = 1,
+    struct Game game =
+    {
+        .graph = mapgraph,
+	    .round = 1,
+	    .nb_bots = 1,
+	    .bots_left = 1,
       
-        .bot_list = {
-	  {
-	    .alive = 0,
-	    .spawn_point = {.x = -50, .y = -50,},
-	    .rect = {-50, -50, BOAT_WIDTH, BOAT_HEIGHT},
-	    .dir = 0,
-	    .speed = 0,
-	    .event = 0,
-	    .type = PIRATE,
-	    .hp = 20,
-	    .ball =
-	    {
-                .rect = {1, 1, 5, 5},
-                .dir = 0,
-                .speed = 0,
-                .dis = 0, //1000 arrêt
-                .event = 0,
+        .bot_list = 
+        {
+	        {
+                .path = NULL,
+	            .alive = 0,
+	            .spawn_point = 
+                {
+                    .x = 5, 
+                    .y = 5,
+                },
+	            .rect = {5, 5, 10, 10},
+	            .dir = 0,
+	            .speed = 0,
+	            .event = 0,
+	            .type = PIRATE,
+	            .hp = 20,
+	            .ball =
+	            {
+                    .rect = {1, 1, 5, 5},
+                    .dir = 0,
+                    .speed = 0,
+                    .dis = 0, //1000 arrêt
+                    .event = 0,
+	            },
+	        },
+
+	        {
+                .path = NULL,
+	            .alive = 0,
+	            .spawn_point = 
+                {
+                    .x = 0, 
+                    .y = -50,
+                },
+	            .rect = {0, -50, BOAT_WIDTH, BOAT_HEIGHT},
+	            .dir = 0,
+	            .speed = 0,
+	            .event = 0,
+	            .type = PIRATE,
+	            .hp = 20,
+	            .ball =
+	            {
+                    .rect = {1, 1, 5, 5},
+                    .dir = 0,
+                    .speed = 0,
+                    .dis = 0, //1000 arrêt
+                    .event = 0,
+	            },
+	        },
+
+	        {
+                .path = NULL,
+	            .alive = 0,
+	            .spawn_point = 
+                {
+                    .x = 50,
+                    .y = -50,
+                },
+	            .rect = { 50, -50, BOAT_WIDTH, BOAT_HEIGHT},
+	            .dir = 0,
+	            .speed = 0,
+	            .event = 0,
+	            .type = PIRATE,
+	            .hp = 20,
+	            .ball =
+	            {
+                    .rect = {1, 1, 5, 5},
+                    .dir = 0,
+                    .speed = 0,
+                    .dis = 0, //1000 arrêt
+                    .event = 0,
+	            },
+	        },
+
+	        {
+                .path = NULL,
+                .alive = 0,
+	            .spawn_point = 
+                {
+                    .x = 100, 
+                    .y = -50,
+                },
+	            .rect = {100, -50, BOAT_WIDTH, BOAT_HEIGHT},
+	            .dir = 0,
+	            .speed = 0,
+	            .event = 0,
+	            .type = GUNPOWDER,
+	            .hp = 10,
+	            .ball =
+                {
+                    .rect = {1, 1, 5, 5},
+                    .dir = 0,
+                    .speed = 0,
+                    .dis = 0, //1000 arrêt
+                    .event = 0,
+	            },
+	        },
+
+	        {
+                .path = NULL,
+	            .alive = 0,
+	            .spawn_point = 
+                {
+                    .x = 150, 
+                    .y = -50,
+                },
+	            .rect = {150, -50, BOAT_WIDTH, BOAT_HEIGHT},
+	            .dir = 0,
+	            .speed = 0,
+	            .event = 0,
+	            .type = GUNPOWDER,
+	            .hp = 10,
+	            .ball =
+                {
+                    .rect = {1, 1, 5, 5},
+                    .dir = 0,
+                    .speed = 0,
+                    .dis = 0, //1000 arrêt
+                    .event = 0,
+	            },
+	        },
+
+	        {
+                .path = NULL,
+	            .alive = 0,
+	            .spawn_point = 
+                {
+                    .x = 200, 
+                    .y = -50,
+                },
+	            .rect = {200, -50, BOAT_WIDTH, BOAT_HEIGHT},
+	            .dir = 0,
+	            .speed = 0,
+	            .event = 0,
+	            .type = WAR,
+	            .hp = 50,
+	            .ball =
+	            {
+                    .rect = {1, 1, 5, 5},
+                    .dir = 0,
+                    .speed = 0,
+                    .dis = 0, //1000 arrêt
+                    .event = 0,
+	            },
+	        },
 	    },
-	  },
-	  {
-	    .alive = 0,
-	    .spawn_point = {.x = 0, .y = -50,},
-	    .rect = {0, -50, BOAT_WIDTH, BOAT_HEIGHT},
-	    .dir = 0,
-	    .speed = 0,
-	    .event = 0,
-	    .type = PIRATE,
-	    .hp = 20,
-	    .ball =
-	    {
-                .rect = {1, 1, 5, 5},
-                .dir = 0,
-                .speed = 0,
-                .dis = 0, //1000 arrêt
-                .event = 0,
-	    },
-	  },
-	  {
-	    .alive = 0,
-	    .spawn_point = {.x = 50, .y = -50,},
-	    .rect = { 50, -50, BOAT_WIDTH, BOAT_HEIGHT},
-	    .dir = 0,
-	    .speed = 0,
-	    .event = 0,
-	    .type = PIRATE,
-	    .hp = 20,
-	    .ball =
-	    {
-                .rect = {1, 1, 5, 5},
-                .dir = 0,
-                .speed = 0,
-                .dis = 0, //1000 arrêt
-                .event = 0,
-	    },
-	  },
-	  {
-            .alive = 0,
-	    .spawn_point = {.x = 100, .y = -50,},
-	    .rect = {100, -50, BOAT_WIDTH, BOAT_HEIGHT},
-	    .dir = 0,
-	    .speed = 0,
-	    .event = 0,
-	    .type = GUNPOWDER,
-	    .hp = 10,
-	    .ball = NULL,
-	  },
-	  {
-	    .alive = 0,
-	    .spawn_point = {.x = 150, .y = -50,},
-	    .rect = {150, -50, BOAT_WIDTH, BOAT_HEIGHT},
-	    .dir = 0,
-	    .speed = 0,
-	    .event = 0,
-	    .type = GUNPOWDER,
-	    .hp = 10,
-	    .ball = NULL,
-	  },
-	  {
-	    .alive = 0,
-	    .spawn_point = {.x = 200, .y = -50,},
-	    .rect = {200, -50, BOAT_WIDTH, BOAT_HEIGHT},
-	    .dir = 0,
-	    .speed = 0,
-	    .event = 0,
-	    .type = WAR,
-	    .hp = 50,
-	    .ball =
-	    {
-                .rect = {1, 1, 5, 5},
-                .dir = 0,
-                .speed = 0,
-                .dis = 0, //1000 arrêt
-                .event = 0,
-	    },
-	  },
-	},
 
         .p =
         {
@@ -825,15 +959,14 @@ int main(){
             .speed = 0,
             .sail = 0,
             .event = 0,
-	    
-	    .ball =
+	        .ball =
             {
                 .rect = {1, 1, 5, 5},
                 .dir = 0,
                 .speed = 0,
                 .dis = 0, //1000 arrêt
                 .event = 0,
-	    },
+	        },
         },
 
         .ui =
@@ -844,13 +977,11 @@ int main(){
             .sailbar = sailbar,
         },
 
-	.island =
-	{
-	  .rect[818]= {0, 0, 0, 0}
-	},
+	    .island =
+	    {
+            .rect[818]= {0, 0, 0, 0}
+	    },
     };
-
-
     
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(area, "draw", G_CALLBACK(on_draw), &game);
@@ -862,11 +993,21 @@ int main(){
     g_timeout_add(100, speed_to_sail, &game);
     g_timeout_add(100, progress_bar, &game);
     g_timeout_add(100, colision, &game);
+    g_timeout_add(5000, path_compute, &game);
     game.p.event = g_timeout_add(100, player_move, &game);
     game.p.event = g_timeout_add(100, ball_move, &game);
     game.p.event = g_timeout_add(100, ball_b_move, &game);
+
+    game.p.event = g_timeout_add(100, move_bots, &game);
+
+    ////////////////////////////////////////////////////
+    int i = 0;
+    game.bot_list[i].event = g_timeout_add(1000, move_robot, &game);
+    ////////////////////////////////////////////////////
     
     gtk_main();
+
+    free(mapgraph);
     return 0;
 }
 

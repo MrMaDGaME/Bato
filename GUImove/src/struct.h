@@ -29,6 +29,7 @@ typedef struct Player{
 } Player;
 
 typedef struct bot{
+    struct Stack *path;
   int alive;
   vector spawn_point;
   GdkRectangle rect;
@@ -53,6 +54,7 @@ typedef struct UserInterface
 } UserInterface;
 
 typedef struct Game{
+    struct graph *graph;
   int round;
   int nb_bots;
   int bots_left;

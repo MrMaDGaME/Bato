@@ -12,6 +12,9 @@
 #ifndef BOT_H
 #define BOT_H
 
+double modula(double x, double y);
+void redro_item(GtkDrawingArea *area, GdkRectangle *old, GdkRectangle *new);
+
 void new_round(struct Game *game);
 //incrémente les veriables de round et nb_bots
 
@@ -27,6 +30,6 @@ void bot_kill(struct Game *game, int bot_index);
 
 //void bot_spawn(gpointer user_data, cairo_t *cr, int bot_index, enum Boat type);
 
-int bot_move(struct Game *game, int bot_index);
+void bot_move(struct Game *game, int bot_index);
 
 #endif

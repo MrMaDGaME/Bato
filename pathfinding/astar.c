@@ -11,37 +11,48 @@
 #define WIDTH 114
 
 struct Stack *pathfinding(struct node *start, struct node *end){
+  if(!start){
+    return NULL;
+  }
+
   struct Stack *path = createStack(2 * (HEIGHT + WIDTH));
   struct Queue *queue = createQueue(HEIGHT * WIDTH);
+
   enqueue(queue, start);
+
   while(!isEmpty_queue(queue)){
     struct node *u = dequeue(queue);
     printf("dequeued x = %d, y = %d\n", u->point->x, u->point->y);
+
     if(u->point->x == end->point->x && u->point->y == end->point->y){
       while(u != start){
-	push(path, u->point);
-	u = u->parent;
+        push(path, u->point);
+        u = u->parent;
       }
+
       push(path, start->point);
       free(queue->array);
       free(queue);
       return path;
     }
+
     struct linklist *adjlist = u->links;
     while (adjlist){
       struct node *adj = adjlist->neighbourg;
       if(!(!adj->point->is_water || adj->marked || isitin(queue, adj))){
-	adj->point->cost = u->point->cost + 1;
-	adj->point->heuristic = adj->point->cost +
-	  sqrtf(pow((float)adj->point->x - end->point->x, 2) +
-		pow((float)adj->point->y - end->point->y, 2));
-	adj->parent = u;
-	enqueue(queue, adj);
+        adj->point->cost = u->point->cost + 1;
+        adj->point->heuristic = adj->point->cost 
+                              + (sqrtf(pow((float)adj->point->x - end->point->x, 2) 
+                              + pow((float)adj->point->y - end->point->y, 2)))/10;
+                              
+        adj->parent = u;
+        enqueue(queue, adj);
       }
       adjlist = adjlist->next;
     }
     u->marked = 1;
   }
+
   free(path->array);
   free(path);
   free(queue->array);
