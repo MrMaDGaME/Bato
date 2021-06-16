@@ -27,6 +27,6 @@ void bot_kill(struct Game *game, int bot_index);
 
 //void bot_spawn(gpointer user_data, cairo_t *cr, int bot_index, enum Boat type);
 
-int bot_move(struct bot *boat, struct Stack *path);
+int bot_move(struct Game *game, int bot_index);
 
 #endif

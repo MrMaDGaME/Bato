@@ -153,18 +153,19 @@ void bot_kill(struct Game *game, int bot_index){
     cairo_fill(cr);
 }
 */
-int bot_move(struct bot *boat, struct Stack *path){
+int bot_move(struct Game *game, int bot_index){
     //return 1 if target is reached, else 0
     struct chkpoint *target = peek(path);
+  struct bot boat = game->bot_list[bot_index];
     struct vector target_dir;
     struct vector player_dir;
-    target_dir.x = target->x - boat->rect.x;
-    target_dir.y = target->y - boat->rect.y;
-    player_dir.x = cosf(boat->dir);
-    player_dir.y = - sinf(boat->dir);
+    target_dir.x = target->x - boat.rect.x;
+    target_dir.y = target->y - boat.rect.y;
+    player_dir.x = cosf(boat.dir);
+    player_dir.y = - sinf(boat.dir);
 
     if(!target_dir.x && !target_dir.y){
-        boat->speed = 0;
+        boat.speed = 0;
 	pop(path);
         return 1;
     }
@@ -189,23 +190,23 @@ int bot_move(struct bot *boat, struct Stack *path){
     if(angle_value != 0){
         if(angle_value <= ROT_STEP){
             if(angle_dir){
-                boat->dir -= angle_value;
+                boat.dir -= angle_value;
             }
             else{
-                boat->dir += angle_value;
+                boat.dir += angle_value;
             }
         }
         else{
             if(angle_dir){
-                boat->dir -= ROT_STEP;
+                boat.dir -= ROT_STEP;
             }
             else{
-                boat->dir += ROT_STEP;
+                boat.dir += ROT_STEP;
             }
         }
     }
     else{
-        boat->speed = 5;
+        boat.speed = 5;
     }
     return 0;
 }
