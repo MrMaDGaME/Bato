@@ -56,13 +56,15 @@ void spawn_bot(struct Game *game, int bot_index){
   game->bots_left -= 1;
   game->bot_list[bot_index].alive = 1;
   GdkRectangle old = game->bot_list[bot_index].rect;
-  game->bot_list[bot_index].rect = {x, y, BOAT_WIDTH, BOAT_HEIGHT};
+  game->bot_list[bot_index].rect.x = x;
+  game->bot_list[bot_index].rect.y = y;
   redraw_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
 }
 
 void bot_kill(struct Game *game, int bot_index){
   GdkRectangle old = game->bot_list[bot_index].rect;
-  game->bot_list[bot_index].rect = {game->bot_list[bot_index].spawn_point.x, game->bot_list[bot_index].spawn_point.y, BOAT_WIDTH, BOAT_HEIGHT};
+  game->bot_list[bot_index].rect.x = game->bot_list[bot_index].spawn_point.x;
+  game->bot_list[bot_index].rect.y = game->bot_list[bot_index].spawn_point.y;
   redraw_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
   game->bot_list[bot_index].alive = 0;
   game->bot_list[bot_index].dir = 0;
@@ -209,7 +211,7 @@ int bot_move(struct bot *boat, struct Stack *path){
 }
 
 
-void bot_shoot(struct bot bot_list, int bot_index; gpointer user_data){
+/*void bot_shoot(struct bot bot_list, int bot_index; gpointer user_data){
   struct Game *game = user_data;
   struct Player player = game->p;
   struct bot *boat = malloc(sizeof(struct bot));
@@ -236,7 +238,7 @@ void bot_shoot(struct bot bot_list, int bot_index; gpointer user_data){
   if(preangle1 > 0.0)
     {
       angle_dir1 = 0;
-      angle_value1 = acos(preangl1);
+      angle_value1 = acos(preangle1);
     }
   else
     {
@@ -255,12 +257,12 @@ void bot_shoot(struct bot bot_list, int bot_index; gpointer user_data){
   if(preangle2 > 0.0)
     {
       angle_dir2 = 0;
-      angle_value2 = acos(preangl2);
+      angle_value2 = acos(preangle2);
     }
   else
     {
       angle_dir2 = 1;
-      angle_value2 = acos(-(preangl2));
+      angle_value2 = acos(-(preangle2));
     }
 
   //choix de l'angle
@@ -309,3 +311,4 @@ void bot_shoot(struct bot bot_list, int bot_index; gpointer user_data){
   }
   free(boat);
 }
+*/

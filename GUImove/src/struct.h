@@ -33,11 +33,11 @@ typedef struct bot{
   vector spawn_point;
   GdkRectangle rect;
   float dir;
-    float speed;
-    guint event;
-    enum Boat type;
-    int hp;
-    struct Ball ball;
+  float speed;
+  guint event;
+  enum Boat type;
+  int hp;
+  struct Ball ball;
 } bot;
 
 typedef struct Isle{
@@ -56,10 +56,10 @@ typedef struct Game{
   int round;
   int nb_bots;
   int bots_left;
-    struct bot bot_list[6];
-    Player p;
-    UserInterface ui;
-    Isle island;
+  struct bot bot_list[6];
+  Player p;
+  UserInterface ui;
+  Isle island;
 } Game;
 
 #endif

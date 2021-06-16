@@ -1,4 +1,5 @@
 #include "bot.h"
+#include "bato.h"
 
 #define PI 3.14159265359
 #define MAX_SAIL 5
@@ -631,14 +632,14 @@ int main(){
     GtkProgressBar *sailbar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "sailbar"));
 
     Game game =
-    {
-      .round = 1,
-      .nb_bots = 1,
-      .bots_left = 1,
+      {
+	.round = 1,
+	.nb_bots = 1,
+	.bots_left = 1,
       
         .bot_list = {
 	  {
-	    .alive = 0
+	    .alive = 0,
 	    .spawn_point = {.x = -50, .y = -50,},
 	    .rect = {-50, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
@@ -656,7 +657,7 @@ int main(){
 	    },
 	  },
 	  {
-	    .alive = 0
+	    .alive = 0,
 	    .spawn_point = {.x = 0, .y = -50,},
 	    .rect = {0, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
@@ -674,7 +675,7 @@ int main(){
 	    },
 	  },
 	  {
-	    .alive = 0
+	    .alive = 0,
 	    .spawn_point = {.x = 50, .y = -50,},
 	    .rect = { 50, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
@@ -692,7 +693,7 @@ int main(){
 	    },
 	  },
 	  {
-            .alive = 0
+            .alive = 0,
 	    .spawn_point = {.x = 100, .y = -50,},
 	    .rect = {100, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
@@ -703,7 +704,7 @@ int main(){
 	    .ball = NULL,
 	  },
 	  {
-	    .alive = 0
+	    .alive = 0,
 	    .spawn_point = {.x = 150, .y = -50,},
 	    .rect = {150, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
@@ -714,7 +715,7 @@ int main(){
 	    .ball = NULL,
 	  },
 	  {
-	    .alive=0
+	    .alive = 0,
 	    .spawn_point = {.x = 200, .y = -50,},
 	    .rect = {200, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
