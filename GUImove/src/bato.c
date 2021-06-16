@@ -481,7 +481,7 @@ gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 
     return b;
 }
-gboolean is_bot_dead(gpointer user_data){
+/*gboolean is_bot_dead(gpointer user_data){
   Game *game = user_data;
   for (int i = 0; i < 6;i++)
       {
@@ -492,7 +492,7 @@ gboolean is_bot_dead(gpointer user_data){
       }
   return TRUE;
 }
-
+*/
 gboolean colision (gpointer user_data){
     Game *game = user_data;
 	
@@ -518,7 +518,7 @@ gboolean colision (gpointer user_data){
 		}
 		else
 		{
-		game->p.health-= 10;
+		game->p.hp-= 10;
 		game->p.sail = 0;
                 game->bot_list[i].speed = 0;
                 game->p.speed = -1;
@@ -530,6 +530,9 @@ gboolean colision (gpointer user_data){
 	  {
 	    GdkRectangle old = game->p.ball.rect;  
 	    game->bot_list[i].hp-= 5;
+	    if(game->bot_list[i].hp <= 0){
+	      bot_kill(game, i);
+	    }
 	    game->p.ball.dis = 0;
 	    game->p.ball.rect.x = -5;
 	    game->p.ball.rect.y = -5;
@@ -636,8 +639,8 @@ int main(){
         .bot_list = {
 	  {
 	    .alive = 0
-	    .spawn_point = {-50, -50},
-	    .rect = {-50, -50, BOAT_WIDTH, BOQT_HEIGHT},
+	    .spawn_point = {.x = -50, .y = -50,},
+	    .rect = {-50, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -654,8 +657,8 @@ int main(){
 	  },
 	  {
 	    .alive = 0
-	    .spawn_point = {0, -50},
-	    .rect = {0, -50, BOAT_WIDTH, BOQT_HEIGHT},
+	    .spawn_point = {.x = 0, .y = -50,},
+	    .rect = {0, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -672,8 +675,8 @@ int main(){
 	  },
 	  {
 	    .alive = 0
-	    .spawn_point = {50, -50},
-	    .rect = { 50, -50, BOAT_WIDTH, BOQT_HEIGHT},
+	    .spawn_point = {.x = 50, .y = -50,},
+	    .rect = { 50, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -690,8 +693,8 @@ int main(){
 	  },
 	  {
             .alive = 0
-	    .spawn_point = {100, -50},
-	    .rect = {100, -50, BOAT_WIDTH, BOQT_HEIGHT},
+	    .spawn_point = {.x = 100, .y = -50,},
+	    .rect = {100, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -701,8 +704,8 @@ int main(){
 	  },
 	  {
 	    .alive = 0
-	    .spawn_point = {150, -50},
-	    .rect = {150, -50, BOAT_WIDTH, BOQT_HEIGHT},
+	    .spawn_point = {.x = 150, .y = -50,},
+	    .rect = {150, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -712,8 +715,8 @@ int main(){
 	  },
 	  {
 	    .alive=0
-	    .spawn_point = {200, -50},
-	    .rect = {200, -50, BOAT_WIDTH, BOQT_HEIGHT},
+	    .spawn_point = {.x = 200, .y = -50,},
+	    .rect = {200, -50, BOAT_WIDTH, BOAT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -768,7 +771,10 @@ int main(){
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(area, "draw", G_CALLBACK(on_draw), &game);
     g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press), &game);
-    g_timeout_add(100, is_bot_dead, &game);
+
+    spawn_bot(&game, 0);
+    
+    //g_timeout_add(100, is_bot_dead, &game);
     g_timeout_add(100, speed_to_sail, &game);
     g_timeout_add(100, progress_bar, &game);
     g_timeout_add(100, colision, &game);
