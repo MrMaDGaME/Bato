@@ -441,6 +441,7 @@ gboolean player_move(gpointer user_data){
     game->p.rect.y = game->p.rect.y + (game->p.speed * sinf(game->p.dir));
     game->p.rect.x = game->p.rect.x + (game->p.speed * cosf(game->p.dir));
 
+    game->p.dir = modulo(game->p.dir, 2*PI);
 
     redraw_item(game->ui.area, &old, &game->p.rect);
 
