@@ -92,7 +92,14 @@ int mapping[] =
         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 
 };
-        
+
+double modulo(double x, double y)
+{
+    /*x modulo y*/
+    x-=y*abs(x/y);
+    if (x>=0.) return (x);
+    else return (x+y);
+}       
 
 
 void draw_arena(GtkWidget *widget, cairo_t *cr, gpointer user_data){
@@ -281,20 +288,95 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
   cairo_set_source_rgb(cr, 0.66, 0.66, 0.66);
   cairo_rectangle(cr,game->p.ball.rect.x,game->p.ball.rect.y,game->p.ball.rect.width,game->p.ball.rect.height);
   cairo_fill(cr);
-  
+
   GdkPixbuf *pix;
   GError *err = NULL;
-  /* Create pixbuf */
-  pix = gdk_pixbuf_new_from_file("../texture/boat/pixel_player_boat.png", &err);
+  GdkPixbuf *sp0, *sp45, *sp22h, *sp22b;
+
+  sp0 = gdk_pixbuf_new_from_file("../texture/boat/pixel_player_boat_sp0.png", &err);
   if(err){
     printf("Error : %s\n", err->message);
     g_error_free(err);
     return FALSE;
   }
 
-  gdk_cairo_set_source_pixbuf(cr, pix, game->p.rect.x - game->p.rect.width/3, game->p.rect.y - game->p.rect.height/2);
-  cairo_paint(cr);
-  cairo_rotate(cr, PI/2);
+  sp45 = gdk_pixbuf_new_from_file("../texture/boat/pixel_player_boat_sp45.png", &err);
+  if(err){
+    printf("Error : %s\n", err->message);
+    g_error_free(err);
+    return FALSE;
+  }
+
+  sp22h = gdk_pixbuf_new_from_file("../texture/boat/pixel_player_boat_sp22h.png", &err);
+  if(err){
+    printf("Error : %s\n", err->message);
+    g_error_free(err);
+    return FALSE;
+  }
+
+  sp22b = gdk_pixbuf_new_from_file("../texture/boat/pixel_player_boat_sp22b.png", &err);
+  if(err){
+    printf("Error : %s\n", err->message);
+    g_error_free(err);
+    return FALSE;
+  }
+
+
+  if(dir >= (31*PI)/16 || dir < PI/16){
+      pix = sp0;
+  }
+  else if(dir < (3*PI)/16 && dir >= PI/16){
+      pix = sp22b;
+  }
+  else if(dir < (5*PI)/16 && dir >= (3*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp45, 270);
+  }
+  else if(dir < (7*PI)/16 && dir >= (5*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp22h, 270);
+  }
+  else if(dir < (9*PI)/16 && dir >= (7*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp0, 270);
+  }
+  else if(dir < (11*PI)/16 && dir >= (9*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp22b, 270);
+  }
+  else if(dir < (13*PI)/16 && dir >= (11)*PI/16){
+      pix = gdk_pixbuf_rotate_simple(sp45, 180);
+  }
+  else if(dir < (15*PI)/16 && dir >= (13*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp22h, 180);
+  }
+  else if(dir < (17*PI)/16 && dir >= (15*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp0, 180);
+  }
+  else if(dir < (19*PI)/16 && dir >= (17*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp22b, 180);
+  }
+  else if(dir < (21*PI)/16 && dir >= (19*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp45, 90);
+  }
+  else if(dir < (23*PI)/16 && dir >= (21*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp22h, 90);
+  }
+  else if(dir < (25*PI)/16 && dir >= (23*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp0, 90);
+  }
+  else if(dir < (27*PI)/16 && dir >= (25*PI)/16){
+      pix = gdk_pixbuf_rotate_simple(sp22b, 90);
+  }
+  else if(dir < (29*PI)/16 && dir >= (27*PI)/16){
+      pix = sp45;
+  }
+  else{
+      pix = sp22h;
+  }
+
+  gdk_cairo_set_source_pixbuf(cr, pix,
+                              x +w/2*cos(dir)*(modulo(dir, 2*PI) > PI/2) -w/2*cosf(dir)*(modulo(dir, 2*PI) > (3*PI)/2),
+                              y - h/2 * cosf(dir) - w/2 * sinf(dir) + h*cos(dir)*(modulo(dir, 2*PI) > PI/2) + 2.5*h*sinf(dir)*(modulo(dir, 2*PI) > PI)
+                              -h*cosf(dir)*(modulo(dir, 2*PI) > (3*PI)/2));
+
+
   cairo_paint(cr);
 
   return FALSE;
