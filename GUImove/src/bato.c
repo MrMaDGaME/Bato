@@ -288,6 +288,14 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
   cairo_set_source_rgb(cr, 0.66, 0.66, 0.66);
   cairo_rectangle(cr,game->p.ball.rect.x,game->p.ball.rect.y,game->p.ball.rect.width,game->p.ball.rect.height);
   cairo_fill(cr);
+	
+  cairo_set_source_rgb(cr, 1, 0.60, 0.30);
+  cairo_rectangle(cr,game->planche1.rect.x,game->planche1.rect.y,game->planche1.rect.width,game->planche1.rect.height);
+  cairo_fill(cr);
+	
+  cairo_set_source_rgb(cr, 1, 0.60, 0.30);
+  cairo_rectangle(cr,game->planche2.rect.x,game->planche2.rect.y,game->planche2.rect.width,game->planche2.rect.height);
+  cairo_fill(cr);
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
   int i = 0;
@@ -519,7 +527,25 @@ gboolean move_bots(gpointer user_data){
     return TRUE;
 }
 
-
+gboolean dist_ball (gpointer user_data){
+  Game *game = user_data;
+  if(game->p.ball.rect.x != -5 && game->p.ball.rect.y != -5)
+    {
+      game->p.ball.dis += 30;
+    }
+  if(game->p.ball.dis >= 1000)
+    {
+      GdkRectangle old = game->p.ball.rect;
+      game->p.ball.dis = 0;
+      game->p.ball.rect.x = -5;
+      game->p.ball.rect.y = -5;
+      game->p.ball.dir = 0;
+      game->p.ball.speed = 0;
+        
+      redraw_item(game->ui.area, &old, &game->p.ball.rect);
+    }
+ return TRUE;
+}
 
 gboolean ball_move(gpointer user_data){
      Game *game = user_data;
@@ -604,26 +630,26 @@ gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
         b = TRUE;
     }
     
-    if(event->keyval == GDK_KEY_a)
+    if(event->keyval == GDK_KEY_a &&  game->p.ball.rect.x == -5 && game->p.ball.rect.y == -5)
     {
         GdkRectangle old = game->p.ball.rect;
-        game->p.ball.rect.x = game->p.rect.x + 21;// * cosf(game->p.dir);
-        game->p.ball.rect.y = game->p.rect.y - 10;// * sinf(game->p.dir);
+        game->p.ball.rect.x = game->p.rect.x  + 21 + 10 * sinf(game->p.dir);
+        game->p.ball.rect.y = game->p.rect.y  + 10 - 20 * cosf(game->p.dir);
         game->p.ball.dir = game->p.dir - 190;
-        game->p.ball.speed = 6;
+        game->p.ball.speed =10;
 	redraw_item(game->ui.area, &old, &game->p.ball.rect);
         b = TRUE;
-
     }
      
-    if(event->keyval == GDK_KEY_e)
+    if(event->keyval == GDK_KEY_e &&  game->p.ball.rect.x == -5 && game->p.ball.rect.y == -5)
     {
         GdkRectangle old = game->p.ball.rect;   
-        game->p.ball.rect.x = game->p.rect.x + 21;// * cosf(game->p.dir);
-        game->p.ball.rect.y = game->p.rect.y + 30;// * sinf(game->p.dir);
+        game->p.ball.rect.x = game->p.rect.x + 21 - 10 * sinf(game->p.dir);
+        game->p.ball.rect.y = game->p.rect.y + 10 + 20 * cosf(game->p.dir);
         game->p.ball.dir = game->p.dir + 190;
-        game->p.ball.speed = 6;
+        game->p.ball.speed = 10;
 	redraw_item(game->ui.area, &old, &game->p.ball.rect);
+	
         b = TRUE;
     }
     
@@ -703,8 +729,8 @@ gboolean colision (gpointer user_data){
 	    GdkRectangle old = game->bot_list[i].ball.rect;  
 	    game->p.hp-= 5;
 	    game->bot_list[i].ball.dis = 0;
-	    game->bot_list[i].ball.rect.x = 1;
-	    game->bot_list[i].ball.rect.y = 1;
+	    game->bot_list[i].ball.rect.x = -5;
+	    game->bot_list[i].ball.rect.y = -5;
 	    game->bot_list[i].ball.dir = 0;
 	    game->bot_list[i].ball.speed = 0;  
 	    redraw_item(game->ui.area, &old, &game->bot_list[i].ball.rect);
@@ -760,9 +786,34 @@ gboolean colision (gpointer user_data){
 	    
 	    game->p.rect.y = game->p.rect.y - (game->p.speed * sinf(game->p.dir));
 	    game->p.rect.x = game->p.rect.x - (game->p.speed * cosf(game->p.dir));
-	    game->p.speed = -1;
+	    game->p.speed = -2;
 	  }
       }
+	
+     if (game->planche1.used == 0)
+       {
+	 if (gdk_rectangle_intersect(&game->planche1.rect,&game->p.rect,NULL))
+	    {
+	        GdkRectangle old = game->planche1.rect;
+		game->planche1.used = 1;
+		game->p.hp +=25;
+		game->planche1.rect.x = -10;
+       	 	game->planche1.rect.y = -10;
+		redraw_item(game->ui.area, &old, &game->planche1.rect);
+	    }
+       }
+     if (game->planche2.used == 0)
+       {
+	  if (gdk_rectangle_intersect(&game->planche2.rect,&game->p.rect,NULL))
+	     {
+		GdkRectangle old = game->planche2.rect;
+		game->planche2.used = 1;
+		game->p.hp +=25;
+		game->planche2.rect.x = -10;
+        	game->planche2.rect.y = -10;
+		redraw_item(game->ui.area, &old, &game->planche2.rect);
+	     }
+        }
      
     return TRUE;
 }
@@ -961,13 +1012,27 @@ int main(){
             .event = 0,
 	        .ball =
             {
-                .rect = {1, 1, 5, 5},
+                .rect = {-5, -5, 5, 5},
                 .dir = 0,
                 .speed = 0,
                 .dis = 0, //1000 arrêt
                 .event = 0,
 	        },
         },
+	    
+	.planche1 =       
+	{
+	  .rect = {50, 50, 10, 30},
+	  .used = 0,
+	  .event = 0,
+	},
+	    
+	.planche2 =        
+	{
+	  .rect = {1100, 750, 30, 10},
+	  .used = 0,
+	  .event = 0,
+	},
 
         .ui =
         {
@@ -993,6 +1058,7 @@ int main(){
     g_timeout_add(100, speed_to_sail, &game);
     g_timeout_add(100, progress_bar, &game);
     g_timeout_add(100, colision, &game);
+    g_timeout_add(100, dist_ball, &game);
     g_timeout_add(5000, path_compute, &game);
     game.p.event = g_timeout_add(100, player_move, &game);
     game.p.event = g_timeout_add(100, ball_move, &game);
