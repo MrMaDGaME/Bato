@@ -621,8 +621,9 @@ int main(){
       
         .bot_list = {
 	  {
+	    .alive = 0
 	    .spawn_point = {-50, -50},
-	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .rect = {-50, -50, BOAT_WIDTH, BOQT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -638,8 +639,9 @@ int main(){
 	    },
 	  },
 	  {
+	    .alive = 0
 	    .spawn_point = {0, -50},
-	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .rect = {0, -50, BOAT_WIDTH, BOQT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -655,8 +657,9 @@ int main(){
 	    },
 	  },
 	  {
+	    .alive = 0
 	    .spawn_point = {50, -50},
-	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .rect = { 50, -50, BOAT_WIDTH, BOQT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -672,8 +675,9 @@ int main(){
 	    },
 	  },
 	  {
+            .alive = 0
 	    .spawn_point = {100, -50},
-	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .rect = {100, -50, BOAT_WIDTH, BOQT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -682,8 +686,9 @@ int main(){
 	    .ball = NULL,
 	  },
 	  {
+	    .alive = 0
 	    .spawn_point = {150, -50},
-	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .rect = {150, -50, BOAT_WIDTH, BOQT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
@@ -692,8 +697,9 @@ int main(){
 	    .ball = NULL,
 	  },
 	  {
+	    .alive=0
 	    .spawn_point = {200, -50},
-	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .rect = {200, -50, BOAT_WIDTH, BOQT_HEIGHT},
 	    .dir = 0,
 	    .speed = 0,
 	    .event = 0,
