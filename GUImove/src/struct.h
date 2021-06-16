@@ -29,6 +29,7 @@ typedef struct Player{
 } Player;
 
 typedef struct bot{
+  int alive;
   vector spawn_point;
   GdkRectangle rect;
   float dir;

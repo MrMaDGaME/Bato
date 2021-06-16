@@ -1,6 +1,4 @@
 #include "bot.h"
-#include <stdlib.h>
-#include <unistd.h>
 
 #define ROT_STEP 0.025
 #define BOAT_WIDTH 44
@@ -9,6 +7,80 @@
 #define WIDTH 1140
 #define PI 3.14159265359
 
+
+void new_round(struct Game *game){
+  game->round += 1;
+  game->nb_bots += 2;
+  game->bots_left = game->nb_bots;
+}
+
+void choose_bot(struct Game *game){
+  if(game->round < 3){
+    for(int i = 0; i<3; i++){
+      if(!game->bot_list[i].alive){
+	spawn_bot(game, i);
+	return;
+      }
+    }
+    err(1, "pas de bot dispo (manche <= 2)");
+  }
+  else{
+    srand(time(NULL));
+    int i = rand() % 6;
+    int k = 0;
+    while(game->bot_list[i].alive){
+      k++;
+      i = rand() % 6;
+      if(k > 6){
+	err(1, "pas de bot dispo (manche > 2)");
+      }
+    }
+    spawn_bot(game, i);
+  }
+}
+
+void spawn_bot(struct Game *game, int bot_index){
+  int x;
+  int y;
+  int hp;
+  switch(bot_index){
+  case 0: x = 50; y = 50; hp = 20; break;
+  case 1: x = WIDTH/2; y = 50; hp = 20; break;
+  case 2: x = WIDTH - 50 - BOAT_WIDTH; y = 50; hp = 20; break;
+  case 3: x = 50; y = HEIGHT - 50 - BOAT_HEIGHT; hp = 10; break;
+  case 4: x = WIDTH/2; y = HEIGHT - 50 - BOAT_HEIGHT; hp = 10; break;
+  case 5: x = WIDTH - 50 - BOAT_WIDTH; y = HEIGHT - 50 - BOAT_HEIGHT; hp = 50; break;
+  default: err(1, "invalid index in spawn_bot");
+  };
+  game->bot_list[bot_index].hp = hp;
+  game->bots_left -= 1;
+  game->bot_list[bot_index].alive = 1;
+  GdkRectangle old = game->bot_list[bot_index].rect;
+  game->bot_list[bot_index].rect = {x, y, BOAT_WIDTH, BOAT_HEIGHT};
+  redraw_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
+}
+
+void bot_kill(struct Game *game, int bot_index){
+  GdkRectangle old = game->bot_list[bot_index].rect;
+  game->bot_list[bot_index].rect = {game->bot_list[bot_index].spawn_point.x, game->bot_list[bot_index].spawn_point.y, BOAT_WIDTH, BOAT_HEIGHT};
+  redraw_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
+  game->bot_list[bot_index].alive = 0;
+  game->bot_list[bot_index].dir = 0;
+  game->bot_list[bot_index].speed = 0;
+  if(game->bots_left > 0){
+    choose_bot(game);
+    return;
+  }
+  int nb_alive = 0;
+  for(int i = 0; i<6; i++){
+    if(game->bot_list[bot_index].alive){
+      nb_alive++;
+    }
+  }
+  if(nb_alive == 0){
+    new_round(game);
+  }
+}
 
 void bot_spawn(gpointer user_data, cairo_t *cr, int bot_index, enum Boat type){
     Game *game = user_data;
