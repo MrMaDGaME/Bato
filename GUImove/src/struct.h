@@ -18,6 +18,12 @@ typedef struct Ball{
     guint event;
 } Ball;
 
+typedef struct Planche{
+    GdkRectangle rect;
+    int used;
+    guint event;
+} Planche;
+
 typedef struct Player{
     GdkRectangle rect;
     float dir;
@@ -59,6 +65,8 @@ typedef struct Game{
   int nb_bots;
   int bots_left;
   struct bot bot_list[6];
+  Planche planche1;
+  Planche planche2;
   Player p;
   UserInterface ui;
   Isle island;
