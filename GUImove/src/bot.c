@@ -82,7 +82,7 @@ void bot_kill(struct Game *game, int bot_index){
   }
 }
 
-void bot_spawn(gpointer user_data, cairo_t *cr, int bot_index, enum Boat type){
+/*void bot_spawn(gpointer user_data, cairo_t *cr, int bot_index, enum Boat type){
     Game *game = user_data;
     struct bot *new_bot = malloc(sizeof(struct bot));
     int x = 0;
@@ -150,7 +150,7 @@ void bot_spawn(gpointer user_data, cairo_t *cr, int bot_index, enum Boat type){
     cairo_close_path (cr);
     cairo_fill(cr);
 }
-
+*/
 int bot_move(struct bot *boat, struct Stack *path){
     //return 1 if target is reached, else 0
     struct chkpoint *target = pop(path);
