@@ -376,7 +376,7 @@ gboolean ball_move(gpointer user_data){
      return TRUE;
  }
 
-boolean ball_b_move(gpointer user_data){
+gboolean ball_b_move(gpointer user_data){
      Game *game = user_data;
      for (int i = 0 ; i < 6 ; i++)
      {
@@ -490,7 +490,7 @@ gboolean is_bot_dead(gpointer user_data){
 	    //Kill bot(game,i);
 	  }
       }
-  return True;
+  return TRUE;
 }
 
 gboolean colision (gpointer user_data){
@@ -503,16 +503,16 @@ gboolean colision (gpointer user_data){
 	  {
             if (game->bot_list[i].type == GUNPOWDER)
 	      {
-		game->p.health-= 25;
+		game->p.hp-= 25;
 		game->bot_list[i].hp-= 25;
 	      }
             else
 	      {
                if (game->p.speed >= game->bot_list[i].speed)
                 {
-                game->bot_list[i].health-= 10;
+                game->bot_list[i].hp-= 10;
 		game->p.sail = 0;
-                game->bot_list[i].sail = 0;
+                game->bot_list[i].speed = 0;
                 game->p.speed = -3;
                 game->bot_list[i].speed = -1;
 		}
@@ -520,9 +520,9 @@ gboolean colision (gpointer user_data){
 		{
 		game->p.health-= 10;
 		game->p.sail = 0;
-                game->bot_list[i].sail = 0;
+                game->bot_list[i].speed = 0;
                 game->p.speed = -1;
-                game->bot_list[i].speed = -3
+                game->bot_list[i].speed = -3;
 		}
 	      }
 	  }
