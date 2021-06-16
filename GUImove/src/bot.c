@@ -153,7 +153,7 @@ void bot_kill(struct Game *game, int bot_index){
 */
 int bot_move(struct bot *boat, struct Stack *path){
     //return 1 if target is reached, else 0
-    struct chkpoint *target = pop(path);
+    struct chkpoint *target = peek(path);
     struct vector target_dir;
     struct vector player_dir;
     target_dir.x = target->x - boat->rect.x;
@@ -163,6 +163,7 @@ int bot_move(struct bot *boat, struct Stack *path){
 
     if(!target_dir.x && !target_dir.y){
         boat->speed = 0;
+	pop(path);
         return 1;
     }
     
