@@ -76,5 +76,10 @@ gboolean player_move(gpointer user_data);
 gboolean speed_to_sail(gpointer user_data);
 gboolean progress_bar(gpointer user_data);
 gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
+gboolean dist_ball (gpointer user_data);
+gboolean tile_collision(Game *game, int tile_x, int tile_y);
+gboolean map_collision(gpointer user_data);
+gboolean ball_move(gpointer user_data);
+gboolean ball_b_move(gpointer user_data);
 
 #endif
