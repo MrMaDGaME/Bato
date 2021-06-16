@@ -376,6 +376,20 @@ gboolean ball_move(gpointer user_data){
      return TRUE;
  }
 
+boolean ball_b_move(gpointer user_data){
+     Game *game = user_data;
+     for (int i = 0 ; i < 6 ; i++)
+     {
+     GdkRectangle old = game->bot_list[i].ball.rect;
+     
+     game->bot_list[i].ball.rect.y = game->bot_list[i].ball.rect.y + (game->bot_list[i].ball.speed * sinf(game->bot_list[i].ball.dir));
+     game->bot_list[i].ball.rect.x = game->bot_list[i].ball.rect.x + (game->bot_list[i].ball.speed * cosf(game->bot_list[i].ball.dir));
+     
+     redraw_item(game->ui.area, &old, &game->bot_list[i].ball.rect);
+     }
+     return TRUE;
+ }
+
 gboolean speed_to_sail(gpointer user_data){
     Game *game = user_data;
 
@@ -760,6 +774,7 @@ int main(){
     g_timeout_add(100, colision, &game);
     game.p.event = g_timeout_add(100, player_move, &game);
     game.p.event = g_timeout_add(100, ball_move, &game);
+    game.p.event = g_timeout_add(100, ball_b_move, &game);
     
     gtk_main();
     return 0;
