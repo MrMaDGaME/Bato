@@ -29,8 +29,9 @@ typedef struct Player{
 } Player;
 
 typedef struct bot{
-    GdkRectangle rect;
-    float dir;
+  vector spawn_point;
+  GdkRectangle rect;
+  float dir;
     float speed;
     guint event;
     enum Boat type;
@@ -51,6 +52,9 @@ typedef struct UserInterface
 } UserInterface;
 
 typedef struct Game{
+  int round;
+  int nb_bots;
+  int bots_left;
     struct bot bot_list[6];
     Player p;
     UserInterface ui;

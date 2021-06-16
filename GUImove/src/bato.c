@@ -8,6 +8,8 @@
 #define BOAT_HEIGHT 20
 #define BOAT_INIT_X 500
 #define BOAT_INIT_Y 250
+#define HEIGHT 760
+#define WIDTH 1140
 
 int mapping[] =
 {
@@ -579,7 +581,100 @@ int main(){
 
     Game game =
     {
-        .bot_list = {NULL, NULL, NULL, NULL, NULL, NULL},
+      .round = 1,
+      .nb_bots = 1,
+      .bots_left = 1,
+      
+        .bot_list = {
+	  {
+	    .spawn_point = {-50, -50},
+	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .dir = 0,
+	    .speed = 0,
+	    .event = 0,
+	    .type = PIRATE,
+	    .hp = 20,
+	    .ball =
+	    {
+                .rect = {1, 1, 5, 5},
+                .dir = 0,
+                .speed = 0,
+                .dis = 0, //1000 arrêt
+                .event = 0,
+	    },
+	  },
+	  {
+	    .spawn_point = {0, -50},
+	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .dir = 0,
+	    .speed = 0,
+	    .event = 0,
+	    .type = PIRATE,
+	    .hp = 20,
+	    .ball =
+	    {
+                .rect = {1, 1, 5, 5},
+                .dir = 0,
+                .speed = 0,
+                .dis = 0, //1000 arrêt
+                .event = 0,
+	    },
+	  },
+	  {
+	    .spawn_point = {50, -50},
+	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .dir = 0,
+	    .speed = 0,
+	    .event = 0,
+	    .type = PIRATE,
+	    .hp = 20,
+	    .ball =
+	    {
+                .rect = {1, 1, 5, 5},
+                .dir = 0,
+                .speed = 0,
+                .dis = 0, //1000 arrêt
+                .event = 0,
+	    },
+	  },
+	  {
+	    .spawn_point = {100, -50},
+	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .dir = 0,
+	    .speed = 0,
+	    .event = 0,
+	    .type = GUNPOWDER,
+	    .hp = 10,
+	    .ball = NULL,
+	  },
+	  {
+	    .spawn_point = {150, -50},
+	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .dir = 0,
+	    .speed = 0,
+	    .event = 0,
+	    .type = GUNPOWDER,
+	    .hp = 10,
+	    .ball = NULL,
+	  },
+	  {
+	    .spawn_point = {200, -50},
+	    .rect = {.spawn_point.x, .spawn_point.y, BOAT_WIDTH, BOQT_HEIGHT},
+	    .dir = 0,
+	    .speed = 0,
+	    .event = 0,
+	    .type = WAR,
+	    .hp = 50,
+	    .ball =
+	    {
+                .rect = {1, 1, 5, 5},
+                .dir = 0,
+                .speed = 0,
+                .dis = 0, //1000 arrêt
+                .event = 0,
+	    },
+	  },
+	},
 
         .p =
         {
@@ -616,7 +711,6 @@ int main(){
 
 
     
-    g_signal_connect(area, "draw", G_CALLBACK(bot_spawn), &game);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(area, "draw", G_CALLBACK(on_draw), &game);
     g_signal_connect(window, "key_press_event", G_CALLBACK(on_key_press), &game);
