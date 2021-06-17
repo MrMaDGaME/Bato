@@ -37,5 +37,6 @@ gboolean tile_collision(Game *game, int tile_x, int tile_y);
 gboolean map_collision(gpointer user_data);
 gboolean ball_move(gpointer user_data);
 gboolean ball_b_move(gpointer user_data);
+gboolean end (gpointer user_data);
 
 #endif
