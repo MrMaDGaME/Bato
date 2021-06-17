@@ -872,6 +872,14 @@ gboolean colision (gpointer user_data){
 }
 
 
+gboolean end (gpointer user_data){
+  Game *game = user_data;
+  if (game->p.hp < 0)
+    {gtk_widget_destroy(game->ui.window);}
+  return TRUE; 
+}
+
+
 int main(){
 
     //création du graphe
@@ -1121,6 +1129,7 @@ int main(){
     game.p.event = g_timeout_add(100, ball_b_move, &game);
     game.p.event = g_timeout_add(100, move_bots, &game);
 
+    g_timeout_add(100, end, &game); //close the window at the end of the program, ie the player have no hp.
     ////////////////////////////////////////////////////
     //game.bot_list[i].event = g_timeout_add(1000, move_robot, &game);
     ////////////////////////////////////////////////////
