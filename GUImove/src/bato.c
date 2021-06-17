@@ -788,6 +788,18 @@ gboolean colision (gpointer user_data){
 	    game->bot_list[i].ball.speed = 0;  
 	    redraw_item(game->ui.area, &old, &game->bot_list[i].ball.rect);
 	  }
+	    /*
+	for (int i = 0; i < 818 ; i++)
+          {
+	    if ( gdk_rectangle_intersect(&game->bot_list[i].rect, &game->island.rect[i],NULL))
+	      {
+	         game->bot_list[i].rect.y = game->bot_list[i].rect.y - (game->bot_list[i].speed * sinf(game->bot_list[i].dir));
+	         game->bot_list[i].rect.x = game->bot_list[i].rect.x - (game->bot_list[i].speed * cosf(game->bot_list[i].dir));
+	         game->bot_list[i].speed = -2;
+	      }
+          }*/
+	    
+	    
       }
     GdkRectangle player = game->p.rect;
     GdkRectangle up_map = {0,0,1140,1};
@@ -796,20 +808,7 @@ gboolean colision (gpointer user_data){
     GdkRectangle down_map = {0,760,1140,1};
 
    
-    /*
-  if (map_collision(user_data))
-    {
-       
-        
-        game->p.sail = 0;
- 
-        game->p.hp -= 10;
-        game->p.rect.y = game->p.rect.y - ((game->p.speed + 5) * sinf(game->p.dir));
-        game->p.rect.x = game->p.rect.x - ((game->p.speed + 5) * cosf(game->p.dir));
-        game->p.speed = -1;
     
-        
-    }*/
     if (gdk_rectangle_intersect(&player, &up_map,NULL) ||
           gdk_rectangle_intersect(&player,&left_map,NULL) ||
           gdk_rectangle_intersect(&player, &right_map,NULL) ||
