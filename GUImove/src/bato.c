@@ -297,7 +297,35 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
   cairo_rectangle(cr,game->planche2.rect.x,game->planche2.rect.y,game->planche2.rect.width,game->planche2.rect.height);
   cairo_fill(cr);
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  for(int i = 0; i < 6; i++){
+    float dir = game->bot_list[i].dir;
+    int a = game->bot_list[i].rect.x;
+    int b = game->bot_list[i].rect.y;
+
+    cairo_set_source_rgb(cr, 1, 0, 1);
+
+    cairo_move_to (cr, a+w/2, b+h/2);
+    cairo_rel_line_to(cr, sinf(dir)*h/2, -cosf(dir)*h/2);
+    cairo_rel_line_to(cr, -cosf(dir)*w/2, -sinf(dir)*w/2);
+    cairo_rel_line_to(cr, -sinf(dir)*h, cosf(dir)*h);
+    cairo_rel_line_to(cr, cosf(dir)*w/2, sinf(dir)*w/2);
+    cairo_close_path (cr);
+    cairo_fill(cr);
+
+    cairo_move_to (cr, a+w/2, b+h/2);
+    cairo_rel_line_to(cr, sinf(dir)*h/2, -cosf(dir)*h/2);
+    cairo_rel_line_to(cr, cosf(dir)*w/2, sinf(dir)*w/2);
+    cairo_rel_line_to(cr, -sinf(dir)*h, cosf(dir)*h);
+    cairo_rel_line_to(cr, -cosf(dir)*w/2, -sinf(dir)*w/2);
+    cairo_close_path (cr);
+    cairo_fill(cr);
+  
+    cairo_set_source_rgb(cr, 0.66, 0.66, 0.66);
+    cairo_rectangle(cr,game->bot_list[i].ball.rect.x,game->bot_list[i].ball.rect.y,game->bot_list[i].ball.rect.width,game->bot_list[i].ball.rect.height);
+    cairo_fill(cr);
+  }
+
+  /*
   int i = 0;
   int a = game->bot_list[i].rect.x;
   int b = game->bot_list[i].rect.y;
@@ -309,7 +337,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data)
   cairo_rel_line_to(cr, -l, 0);
   cairo_close_path (cr);
   cairo_fill(cr);
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  */
 
   GdkPixbuf *pix;
   GError *err = NULL;
@@ -411,7 +439,7 @@ void redraw_item(GtkDrawingArea *area, GdkRectangle *old, GdkRectangle *new)
   gdk_rectangle_union(old, new, old);
 
   gtk_widget_queue_draw_area(GTK_WIDGET(area),
-			     (*old).x-((*old).width*2), (*old).y-((*old).width*2), (*old).width*4,(*old).width*4);
+			     (*old).x-((*old).width*2), (*old).y-((*old).width*2), (*old).width*8,(*old).width*8);
 }
 
 
@@ -467,6 +495,17 @@ gboolean player_move(gpointer user_data){
 
     redraw_item(game->ui.area, &old, &game->p.rect);
 
+    for(int i = 0; i < 6; i++){
+      old = game->bot_list[i].rect;
+            
+      game->bot_list[i].rect.y = game->bot_list[i].rect.y + (game->bot_list[i].speed * sinf(game->bot_list[i].dir));
+      game->bot_list[i].rect.x = game->bot_list[i].rect.x + (game->bot_list[i].speed * cosf(game->bot_list[i].dir));
+
+      game->bot_list[i].dir = modulo(game->bot_list[i].dir, 2*PI);
+
+      redraw_item(game->ui.area, &old, &game->bot_list[i].rect);
+    }
+
     return TRUE;
 }
 
@@ -475,6 +514,7 @@ gboolean player_move(gpointer user_data){
 gboolean path_compute(gpointer user_data){
     Game *game = user_data;
     for(int i = 0; i < 6; i++){
+      if(game->bot_list[i].alive){
             struct node *start = NULL;
             struct node *end = NULL; 
             struct node *parkour = game->graph->first;
@@ -482,22 +522,29 @@ gboolean path_compute(gpointer user_data){
 	            if(parkour->point->y == (game->p.rect.y/10)*10 && parkour->point->x == (game->p.rect.x/10)*10){
 		            end = parkour;
                 }
-                if(parkour->point->y == (game->bot_list[i].rect.y/10)*10 && parkour->point->x == (game->bot_list[i].rect.x/10)*10){
+		    if(parkour->point->y == ((game->bot_list[i].rect.y + 10)/10)*10 && parkour->point->x == ((game->bot_list[i].rect.x + 22)/10)*10){
                     start = parkour;
                 }
                 parkour = parkour->next;
             }
-            struct Stack *path = pathfinding(start, end);
-            if(path){
-                game->bot_list[i].path = path;
-            }
+	    if(game->bot_list[i].path){
+	      free(game->bot_list[i].path);
+	    }
+	    if(!start){
+	      err(1, "pas de start");
+	    }
+	    if(!end){
+	      err(1, "pas de end");
+	    }
+	    game->bot_list[i].path = pathfinding(start, end);
+	    printf("path trouvé pour bateau %d\n", i);
+      }
     }
-
     return TRUE;
 }
 
 
-gboolean move_robot(gpointer user_data){
+/*gboolean move_robot(gpointer user_data){
     Game *game = user_data;
     int i = 0;
 
@@ -515,14 +562,16 @@ gboolean move_robot(gpointer user_data){
 
     return TRUE;
 }
-
+*/
 
 gboolean move_bots(gpointer user_data){
     Game *game = user_data;
 
-    //for(int i = 0; i < 6; i++){
+    for(int i = 0; i < 6; i++){
+      if(game->bot_list[i].path){
         bot_move(game, 0);
-    //}
+      }
+    }
 
     return TRUE;
 }
@@ -592,6 +641,10 @@ gboolean progress_bar(gpointer user_data){
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(game->ui.lifebar), (game->p.hp)/100);
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(game->ui.sailbar), (game->p.sail)/MAX_SAIL);
 
+    gchar txt[8];
+    sprintf(txt, "%i", game->round);
+    gtk_label_set_text(game->ui.roundLabel, txt);
+    
     return TRUE;
 }
 
@@ -847,6 +900,7 @@ int main(){
     GtkDrawingArea* area = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "area"));
     GtkProgressBar *lifebar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "lifebar"));
     GtkProgressBar *sailbar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "sailbar"));
+    GtkLabel *roundNumber = GTK_LABEL(gtk_builder_get_object(builder, "roundLabelNumber"));
 
     struct Game game =
     {
@@ -858,7 +912,7 @@ int main(){
         .bot_list = 
         {
 	        {
-                .path = NULL,
+		  .path = NULL,
 	            .alive = 0,
 	            .spawn_point = 
                 {
@@ -882,7 +936,7 @@ int main(){
 	        },
 
 	        {
-                .path = NULL,
+		  .path = NULL,
 	            .alive = 0,
 	            .spawn_point = 
                 {
@@ -906,7 +960,7 @@ int main(){
 	        },
 
 	        {
-                .path = NULL,
+		  .path = NULL,
 	            .alive = 0,
 	            .spawn_point = 
                 {
@@ -930,8 +984,8 @@ int main(){
 	        },
 
 	        {
-                .path = NULL,
-                .alive = 0,
+		  .path = NULL,
+		  .alive = 0,
 	            .spawn_point = 
                 {
                     .x = 100, 
@@ -954,7 +1008,7 @@ int main(){
 	        },
 
 	        {
-                .path = NULL,
+		  .path = NULL,
 	            .alive = 0,
 	            .spawn_point = 
                 {
@@ -978,7 +1032,7 @@ int main(){
 	        },
 
 	        {
-                .path = NULL,
+		  .path = NULL,
 	            .alive = 0,
 	            .spawn_point = 
                 {
@@ -1036,6 +1090,7 @@ int main(){
 
         .ui =
         {
+	  .roundLabel = roundNumber,
             .window = window,
             .area = area,
             .lifebar = lifebar,
@@ -1059,21 +1114,23 @@ int main(){
     g_timeout_add(100, progress_bar, &game);
     g_timeout_add(100, colision, &game);
     g_timeout_add(100, dist_ball, &game);
-    g_timeout_add(5000, path_compute, &game);
+    path_compute(&game);
+    g_timeout_add(10000, path_compute, &game);
     game.p.event = g_timeout_add(100, player_move, &game);
     game.p.event = g_timeout_add(100, ball_move, &game);
     game.p.event = g_timeout_add(100, ball_b_move, &game);
-
     game.p.event = g_timeout_add(100, move_bots, &game);
 
     ////////////////////////////////////////////////////
-    int i = 0;
-    game.bot_list[i].event = g_timeout_add(1000, move_robot, &game);
+    //game.bot_list[i].event = g_timeout_add(1000, move_robot, &game);
     ////////////////////////////////////////////////////
     
     gtk_main();
 
-    free(mapgraph);
+    for(int i = 0; i < 6; i++){
+      free(game.bot_list[i].path);
+    }
+    free_graph(mapgraph);
     return 0;
 }
 

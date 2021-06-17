@@ -22,8 +22,6 @@ struct Stack *pathfinding(struct node *start, struct node *end){
 
   while(!isEmpty_queue(queue)){
     struct node *u = dequeue(queue);
-    printf("dequeued x = %d, y = %d\n", u->point->x, u->point->y);
-
     if(u->point->x == end->point->x && u->point->y == end->point->y){
       while(u != start){
         push(path, u->point);

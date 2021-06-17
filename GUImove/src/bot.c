@@ -102,30 +102,37 @@ void bot_kill(struct Game *game, int bot_index){
 
 
 void bot_move(struct Game *game, int bot_index){
-    if(game->bot_list[bot_index].path == NULL){
-      return;
-    }
+  if(!game->bot_list[bot_index].path){
+    printf("path null at index = %d\n", bot_index);
+    err(1, "bot_move : path NULL\n");
+  }
     struct chkpoint *target = peek(game->bot_list[bot_index].path);
-    struct bot boat = game->bot_list[bot_index];
     struct vector target_dir;
+    //vecteur qui va du bot au joueur
     struct vector player_dir;
-    target_dir.x = target->x - boat.rect.x;
-    target_dir.y = target->y - boat.rect.y;
-    player_dir.x = cosf(boat.dir);
-    player_dir.y = - sinf(boat.dir);
+    //vecteur direction du bot;
+    int bot_x = game->bot_list[bot_index].rect.x + 22;
+    int bot_y = game->bot_list[bot_index].rect.y + 10;
+    target_dir.x = target->x - bot_x;
+    target_dir.y = target->y - bot_y;
+    player_dir.x = cosf(game->bot_list[bot_index].dir);
+    player_dir.y = - sinf(game->bot_list[bot_index].dir);
 
-    if(!target_dir.x && !target_dir.y){
-        boat.speed = 0;
+    if(target_dir.x < 10 && target_dir.y < 10){
+        game->bot_list[bot_index].speed = 0;
 	      pop(game->bot_list[bot_index].path);
         return;
     }
+    printf("target_dir : x = %f, y = %f\n", target_dir.x, target_dir.y);
+    printf("player_dir : x = %f, y = %f\n", player_dir.x, player_dir.y);
+    printf("target : x = %d, y = %d\n", target->x, target->y);
     
     int angle_dir; //give the direction of the angle: 0 is right, 1 is left
     float angle_value; //the value of the angle in radian
     
     float preangle = (player_dir.x * target_dir.x - player_dir.y * target_dir.y) /
-        sqrtf(player_dir.x * player_dir.x + player_dir.y * player_dir.y) *
-        sqrtf(target_dir.x * target_dir.x + target_dir.y * target_dir.y);
+      (sqrtf(player_dir.x * player_dir.x + player_dir.y * player_dir.y) *
+       sqrtf(target_dir.x * target_dir.x + target_dir.y * target_dir.y));
     
     if(preangle > 0.0)
     {
@@ -137,29 +144,32 @@ void bot_move(struct Game *game, int bot_index){
         angle_dir = 1;
         angle_value = acos(-(preangle));
     }
-    if(angle_value != 0){
+    printf("angle_value = %f\n", angle_value);
+    if(angle_value >= 0.01){
         if(angle_value <= ROT_STEP){
             if(angle_dir){
-                boat.dir -= angle_value;
+                game->bot_list[bot_index].dir -= angle_value;
             }
             else{
-                boat.dir += angle_value;
+                game->bot_list[bot_index].dir += angle_value;
             }
+	    game->bot_list[bot_index].speed = 5;
         }
         else{
             if(angle_dir){
-                boat.dir -= ROT_STEP;
+                game->bot_list[bot_index].dir -= ROT_STEP;
             }
             else{
-                boat.dir += ROT_STEP;
+                game->bot_list[bot_index].dir += ROT_STEP;
             }
-        }
+	}
     }
     else{
-        boat.speed = 5;
+      game->bot_list[bot_index].speed = 5;
     }
+    printf("bot %d : speed = %f, dir = %f\nx = %d, y = %d\n", bot_index, game->bot_list[bot_index].speed, game->bot_list[bot_index].dir, game->bot_list[bot_index].rect.x, game->bot_list[bot_index].rect.y);
 
-    GdkRectangle old = game->bot_list[bot_index].rect;
+    /*GdkRectangle old = game->bot_list[bot_index].rect;
             
     game->bot_list[bot_index].rect.y = game->bot_list[bot_index].rect.y + (game->bot_list[bot_index].speed * sinf(game->bot_list[bot_index].dir));
     game->bot_list[bot_index].rect.x = game->bot_list[bot_index].rect.x + (game->bot_list[bot_index].speed * cosf(game->bot_list[bot_index].dir));
@@ -167,7 +177,7 @@ void bot_move(struct Game *game, int bot_index){
     game->bot_list[bot_index].dir = modula(game->bot_list[bot_index].dir, 2*PI);
 
     redro_item(game->ui.area, &old, &game->bot_list[bot_index].rect);
-    return;
+    return;*/
 }
 
 

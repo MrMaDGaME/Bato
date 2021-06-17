@@ -57,10 +57,11 @@ typedef struct UserInterface
     GtkDrawingArea* area;
     GtkProgressBar *lifebar;
     GtkProgressBar *sailbar;
+    GtkLabel *roundLabel;
 } UserInterface;
 
 typedef struct Game{
-    struct graph *graph;
+  struct graph *graph;
   int round;
   int nb_bots;
   int bots_left;
