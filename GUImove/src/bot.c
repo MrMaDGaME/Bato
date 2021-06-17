@@ -130,11 +130,11 @@ void bot_move(struct Game *game, int bot_index){
     float angle_value; //the value of the angle in radian
     float angle_dir = target_dir.x * player_dir.y - (target_dir.y * player_dir.x);
     
-    float preangle = (player_dir.x * target_dir.x - player_dir.y * target_dir.y) /
+    float cos_teta = (player_dir.x * target_dir.x + player_dir.y * target_dir.y) /
       (sqrtf(player_dir.x * player_dir.x + player_dir.y * player_dir.y) *
        sqrtf(target_dir.x * target_dir.x + target_dir.y * target_dir.y));
     
-    angle_value = acos(preangle);
+    angle_value = acos(cos_teta);
 
     printf("angle_value = %f\n", angle_value);
     if(angle_value != 0){
