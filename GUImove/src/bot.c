@@ -118,7 +118,7 @@ void bot_move(struct Game *game, int bot_index){
     player_dir.x = cosf(game->bot_list[bot_index].dir);
     player_dir.y = - sinf(game->bot_list[bot_index].dir);
 
-    if(target_dir.x < 10 && target_dir.y < 10){
+    if(target_dir.x == 0 && target_dir.y == 0){
         game->bot_list[bot_index].speed = 0;
 	      pop(game->bot_list[bot_index].path);
         return;
@@ -127,27 +127,19 @@ void bot_move(struct Game *game, int bot_index){
     printf("player_dir : x = %f, y = %f\n", player_dir.x, player_dir.y);
     printf("target : x = %d, y = %d\n", target->x, target->y);
     
-    int angle_dir; //give the direction of the angle: 0 is right, 1 is left
     float angle_value; //the value of the angle in radian
+    float angle_dir = target_dir.x * player_dir.y - (target_dir.y * player_dir.x);
     
     float preangle = (player_dir.x * target_dir.x - player_dir.y * target_dir.y) /
       (sqrtf(player_dir.x * player_dir.x + player_dir.y * player_dir.y) *
        sqrtf(target_dir.x * target_dir.x + target_dir.y * target_dir.y));
     
-    if(preangle > 0.0)
-    {
-        angle_dir = 0;
-        angle_value = acos(preangle);
-    }
-    else
-    {
-        angle_dir = 1;
-        angle_value = acos(-(preangle));
-    }
+    angle_value = acos(preangle);
+
     printf("angle_value = %f\n", angle_value);
-    if(angle_value >= 0.01){
+    if(angle_value != 0){
         if(angle_value <= ROT_STEP){
-            if(angle_dir){
+            if(angle_dir < 0){
                 game->bot_list[bot_index].dir -= angle_value;
             }
             else{
@@ -156,7 +148,7 @@ void bot_move(struct Game *game, int bot_index){
 	    game->bot_list[bot_index].speed = 5;
         }
         else{
-            if(angle_dir){
+            if(angle_dir < 0){
                 game->bot_list[bot_index].dir -= ROT_STEP;
             }
             else{
