@@ -13,10 +13,14 @@ In order to run Bato, you have to:
 
 COMMANDE:
 -E : shoot on port(left).
+
 -A : shoot on starboard(right).
     
 -Z : increase sail, maintain z for more efficiency.
+
 -S : decrease sail.
+
 -Q : turn left.
+
 -D : turn right.
     
