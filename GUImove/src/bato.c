@@ -96,7 +96,7 @@ int mapping[] =
 double modulo(double x, double y)
 {
     /*x modulo y*/
-    x-=y*abs(x/y);
+    x-=y*(int)(fabs(x/y));
     if (x>=0.) return (x);
     else return (x+y);
 }       
@@ -713,7 +713,7 @@ gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
         game->p.speed = 0;
     }
 
-    printf("Joueur: x = %i, y = %i\n", (game->p.rect.x/10)*10, (game->p.rect.y/10)*10);
+    //printf("Joueur: x = %i, y = %i\n", (game->p.rect.x/10)*10, (game->p.rect.y/10)*10);
 
     return b;
 }
@@ -870,14 +870,14 @@ gboolean colision (gpointer user_data){
     return TRUE;
 }
 
-
+/*
 gboolean end (gpointer user_data){
   Game *game = user_data;
   if (game->p.hp < 0)
     {gtk_widget_destroy(game->ui.window);}
   return TRUE; 
 }
-
+*/
 
 int main(){
 
@@ -1128,7 +1128,7 @@ int main(){
     game.p.event = g_timeout_add(100, ball_b_move, &game);
     game.p.event = g_timeout_add(100, move_bots, &game);
 
-    g_timeout_add(100, end, &game); //close the window at the end of the program, ie the player have no hp.
+    //g_timeout_add(100, end, &game); close the window at the end of the program, ie the player have no hp.
     ////////////////////////////////////////////////////
     //game.bot_list[i].event = g_timeout_add(1000, move_robot, &game);
     ////////////////////////////////////////////////////

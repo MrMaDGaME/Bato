@@ -7,14 +7,15 @@
 #define WIDTH 1140
 #define PI 3.14159265359
 
+/*
 double modula(double x, double y)
 {
-    /*x modulo y*/
+    //x modulo y
     x-=y*abs(x/y);
     if (x>=0.) return (x);
     else return (x+y);
 }       
-
+*/
 
 void redro_item(GtkDrawingArea *area, GdkRectangle *old, GdkRectangle *new)
 {
@@ -123,9 +124,9 @@ void bot_move(struct Game *game, int bot_index){
 	      pop(game->bot_list[bot_index].path);
         return;
     }
-    printf("target_dir : x = %f, y = %f\n", target_dir.x, target_dir.y);
-    printf("player_dir : x = %f, y = %f\n", player_dir.x, player_dir.y);
-    printf("target : x = %d, y = %d\n", target->x, target->y);
+    //printf("target_dir : x = %f, y = %f\n", target_dir.x, target_dir.y);
+    //printf("player_dir : x = %f, y = %f\n", player_dir.x, player_dir.y);
+    //printf("target : x = %d, y = %d\n", target->x, target->y);
     
     float angle_value; //the value of the angle in radian
     float angle_dir = target_dir.x * player_dir.y - (target_dir.y * player_dir.x);
@@ -136,7 +137,7 @@ void bot_move(struct Game *game, int bot_index){
     
     angle_value = acos(cos_teta);
 
-    printf("angle_value = %f\n", angle_value);
+    //printf("angle_value = %f\n", angle_value);
     if(angle_value != 0){
         if(angle_value <= ROT_STEP){
             if(angle_dir < 0){
@@ -159,7 +160,7 @@ void bot_move(struct Game *game, int bot_index){
     else{
       game->bot_list[bot_index].speed = 5;
     }
-    printf("bot %d : speed = %f, dir = %f\nx = %d, y = %d\n", bot_index, game->bot_list[bot_index].speed, game->bot_list[bot_index].dir, game->bot_list[bot_index].rect.x, game->bot_list[bot_index].rect.y);
+    //printf("bot %d : speed = %f, dir = %f\nx = %d, y = %d\n", bot_index, game->bot_list[bot_index].speed, game->bot_list[bot_index].dir, game->bot_list[bot_index].rect.x, game->bot_list[bot_index].rect.y);
 
     /*GdkRectangle old = game->bot_list[bot_index].rect;
             
